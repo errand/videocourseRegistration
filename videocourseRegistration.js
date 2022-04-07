@@ -112,7 +112,7 @@ class UserRegister {
                   }
               })
               .catch((error) => {
-                  console.log('[WP Pageviews Plugin]');
+                  console.log('[Video Registration]');
                   console.error(error);
               });
         }
