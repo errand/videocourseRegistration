@@ -37,27 +37,59 @@ class UserRegister {
 </div>
       <div data-tab="register">
       <form id="videoRegistrationForm">
-        <div class="form-group">
-          <label for="userLastName">Last name</label>
-          <div class="form-control"><input type="text" name="userLastName" data-id="userLastName" required></div>
+        <div class="form-row">
+            <div class="form-group">
+              <div class="form-control"><input type="text" name="userLastName" data-id="userLastName" placeholder="Vorname" required></div>
+            </div>
+            <div class="form-group">
+              <div class="form-control"><input type="text" name="userFirstName" data-id="userFirstName" placeholder="Nachname" required></div>
+            </div>
         </div>
         <div class="form-group">
-          <label for="userFirstName">First name</label>
-          <div class="form-control"><input type="text" name="userFirstName" data-id="userFirstName" required></div>
+          <div class="form-control"><input type="email" name="userEmail" data-id="userEmail" placeholder="E-Mail" required></div>
+        </div>
+        <div class="form-row">
+           <div class="form-group">
+              <div class="form-control"><input type="text" name="userCity" data-id="userCity" placeholder="Stadt" required></div>
+           </div>
+           <div class="form-group">
+              <div class="form-control">
+                  <select name="userMunicipality" data-id="userMunicipality">
+                    <option selected disabled>Kommune</option>
+                    <option name="BadenWürttemberg">Baden-Württemberg</option>
+                    <option name="Bayern">Bayern</option>
+                    <option name="Berlin">Berlin</option>
+                    <option name="Brandenburg">Brandenburg</option>
+                    <option name="Bremen">Bremen</option>
+                    <option name="Hamburg">Hamburg</option>
+                    <option name="Hessen">Hessen</option>
+                    <option name="MecklenburgVorpommern">Mecklenburg-Vorpommern</option>
+                    <option name="Niedersachsen">Niedersachsen</option>
+                    <option name="NordrheinWestfalen">Nordrhein-Westfalen</option>
+                    <option name="RheinlandPfalz">Rheinland-Pfalz</option>
+                    <option name="Saarland">Saarland</option>
+                    <option name="SachsenAnhalt">Sachsen-Anhalt</option>
+                    <option name="SchleswigHolstein">Schleswig-Holstein</option>
+                    <option name="Thüringen">Thüringen</option>
+                  </select>
+              </div>
+            </div>
         </div>
         <div class="form-group">
-          <label for="userCity">City</label>
-          <div class="form-control"><input type="text" name="userCity" data-id="userCity" required></div>
+          <div class="form-control"><input type="text" name="userCompany" data-id="userCompany" placeholder="Unternehmen"></div>
         </div>
         <div class="form-group">
-          <label for="userMunicipality">Municipality</label>
-          <div class="form-control"><input type="text" name="userMunicipality" data-id="userMunicipality" required></div>
+          <div class="form-control">
+          <input type="checkbox" name="userIndividual" id="userIndividual" data-id="userIndividual"> 
+          <label for="userIndividual">Privatperson</label></div>
         </div>
         <div class="form-group">
-          <label for="userCompany">Company including company name / Individual</label>
-          <div class="form-control"><input type="text" name="userCompany" data-id="userCompany" required></div>
+          <div class="form-control"><input type="text" name="userLogin" data-id="userLogin" placeholder="Login" required></div>
         </div>
-        <button type="button" id="registerSubmit">Register</button>
+        <div class="form-group">
+          <div class="form-control"><input type="password" name="userPassword" data-id="userPassword" placeholder="Passwort" required></div>
+        </div>
+        <button type="button" id="registerSubmit">Registrieren</button>
       </form>
 </div>
 </div>
