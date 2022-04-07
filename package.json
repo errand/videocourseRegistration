@@ -1,0 +1,16 @@
+{
+  "name": "events_filter",
+  "version": "1.0.0",
+  "main": "events_filter.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:errand/events_filter.git"
+  },
+  "author": "Aleksandr Shatskikh",
+  "license": "ISC",
+  "homepage": "https://github.com/errand/events_filter",
+  "dependencies": {},
+  "devDependencies": {},
+  "description": ""
+}
