@@ -230,26 +230,35 @@ class UserRegister {
     }
     registerUser (target) {
         if (this.validateForm(target)) {
-            let user = ''
+            let user = [];
+            let dataArray =[];
             const form = target.closest('#videoRegistrationForm')
             const inputs = form.querySelectorAll('input')
             Array.from(inputs).forEach(input => {
-                user = user + input.name + '=' + input.value + '&'
+                if (input.type != 'radio' || input.type === 'radio' && input.checked) {
+                    dataArray.push([
+                        input.name,
+                        input.value
+                    ])
+                }
+                user = user + input.name + '=' + input.value + '&';
             })
+
+            dataArray = new Map(dataArray);
+            console.log(dataArray);
             const data = new FormData();
 
             data.append( 'action', 'registerUser' );
-            data.append( 'inputs', inputs );
+            data.append( 'inputs', dataArray );
 
             fetch(videocourseRegistration.ajax_url, {
                 method: "POST",
                 credentials: 'same-origin',
                 body: data
             })
-              .then((response) => response.json())
               .then((data) => {
-                  console.log(data)
                   if (data) {
+                      console.log(data)
                       this.modal.remove()
                       this.container.classList.remove('blocked')
                       _paq.push(['trackEvent', 'VideoCourse', 'Registration', 'User', user])
