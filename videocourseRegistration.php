@@ -25,7 +25,8 @@ add_action("wp_ajax_nopriv_registerUser", "registerUser");
 function registerUser()
 {
     $inputs = $_POST['inputs'];
-    $inputs = json_decode($inputs, 1);
+    $inputs = stripslashes(html_entity_decode($inputs));
+    $inputs = json_decode($inputs, true);
     wp_send_json($inputs);
     wp_die();
 }
