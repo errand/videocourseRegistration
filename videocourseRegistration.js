@@ -63,19 +63,19 @@ class UserRegister {
           <label>Anrede:</label>
           <div class="form-group">
               <div class="form-control">
-                  <input class="form-input" type="radio" value="female" id="female" name="anrede-group" required>
+                  <input class="form-input" type="radio" value="female" id="female" name="anredeGroup" required>
                   <label for="female">Frau</label> 
               </div>    
           </div>
           <div class="form-group">
               <div class="form-control">
-                  <input class="form-input" type="radio" value="male" id="male" name="anrede-group" required>
+                  <input class="form-input" type="radio" value="male" id="male" name="anredeGroup" required>
                   <label for="male">Herr</label> 
               </div>    
           </div>
           <div class="form-group">
               <div class="form-control">
-                  <input class="form-input" type="radio" value="other" id="other" name="anrede-group" required>
+                  <input class="form-input" type="radio" value="other" id="other" name="anredeGroup" required>
                   <label for="other">Divers</label>   
             </div>  
           </div>
@@ -231,32 +231,32 @@ class UserRegister {
     registerUser (target) {
         if (this.validateForm(target)) {
             let user = '';
-            let dataArray =[];
+            let dataObjects = [];
             const form = target.closest('#videoRegistrationForm')
             const inputs = form.querySelectorAll('input')
             Array.from(inputs).forEach(input => {
                 if (input.type != 'radio' || input.type === 'radio' && input.checked) {
-                    dataArray.push([
-                        input.name,
-                        input.value
-                    ])
+                    dataObjects.push({
+                        [input.name]:input.value
+                    })
                 }
                 user = user + input.name + '=' + input.value + '&';
             })
 
-            dataArray = new Map(dataArray);
-            console.log(dataArray);
+            dataObjects = JSON.stringify(dataObjects);
+            console.log(dataObjects);
             const data = new FormData();
 
             data.append( 'action', 'registerUser' );
-            data.append( 'inputs', dataArray );
+            data.append( 'inputs', dataObjects );
 
             fetch(videocourseRegistration.ajax_url, {
                 method: "POST",
                 credentials: 'same-origin',
                 body: data
             })
-                .then((data) => {
+                .then(response => response.json())
+                .then(data => {
                     if (data) {
                         console.log(data)
                         this.modal.remove()
