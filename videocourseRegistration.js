@@ -6,19 +6,27 @@ class UserRegister {
 
     init () {
         this.resolveElements()
-        this.checkUser()
+        this.addEventListeners()
     }
 
     resolveElements () {
         this.user = document.querySelector('html').classList.contains('logged-in')
+        this.loginButton = document.getElementById('authButton')
+    }
+
+    addEventListeners () {
+        if (!this.user) {
+            this.loginButton.addEventListener('click', () => this.showRegistrationModal())
+        }
     }
 
     checkUser () {
         if (!this.user) {
             this.showRegistrationModal()
-            //this.container.classList.add('blocked')
+            this.container.classList.add('blocked')
         } else {
-            //this.container.classList.remove('blocked')
+            this.container.classList.remove('blocked')
+            this.loginButton.style.display = 'none'
         }
     }
 
@@ -27,6 +35,9 @@ class UserRegister {
         this.modal.classList.add('modal')
         this.modal.innerHTML = `
     <div class="modal-inner">
+        <div id="modalClose">
+       close X
+</div>
         <div class="modal-tabs">
         <div class="modal-tabs-header">
           <span data-action="login" class="active">Anmelden</span>
@@ -136,6 +147,7 @@ class UserRegister {
     </div>
     `
         document.body.appendChild(this.modal)
+        document.getElementById('modalClose').addEventListener('click', () => this.modal.remove())
         document.getElementById('registerSubmit').addEventListener('click', ev => this.registerUser(ev.target))
         document.getElementById('loginSubmit').addEventListener('click', ev => this.loginUser(ev.target))
         document.querySelector('[data-action="login"]').addEventListener('click', () => {
