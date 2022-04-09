@@ -93,7 +93,7 @@ class UserRegister {
         </div>
         <div class="form-group">
               <div class="form-control">
-                  <select class="form-input" name="uuserKommune" data-id="userMunicipality" title="Stadt / Kommune" required>
+                  <select class="form-input" name="userKommune" data-id="userMunicipality" title="Stadt / Kommune" required>
                     <option value="" selected disabled>Stadt / Kommune</option>
                     <option value="BadenWürttemberg" name="BadenWürttemberg">Baden-Württemberg</option>
                     <option value="Bayern" name="Bayern">Bayern</option>

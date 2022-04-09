@@ -27,11 +27,10 @@ function registerUser()
     $data = stripslashes(html_entity_decode($_POST['inputs']));
     $data = json_decode($data, true);
 
-    wp_create_user($data['userLogin'], $data['userPassword'], $data['userEmail']);
-    $user = get_user_by('slug', $data['userLogin']);
-
     $userMetaData = [
         'user_login'           => $data['userLogin'],
+        'user_email'           => $data['userEmail'],
+        'user_password'        => $data['userPassword'],
         'first_name'           => $data['userFirstName'],
         'last_name'            => $data['userLastName'],
         'meta_input'           => [
