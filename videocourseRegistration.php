@@ -42,7 +42,6 @@ function registerUser()
     ];
 
     wp_insert_user($userMetaData);
-
     wp_send_json($data['userKommune']);
     wp_die();
 }
