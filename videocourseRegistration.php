@@ -34,7 +34,7 @@ function registerUser()
     wp_die();
 }
 
-/* add meta dta to meta fields */
+/* add meta data to meta fields */
 function updateUserMeta($user_id, $metadata)
 {
     foreach ($metadata as $key => $value) {
