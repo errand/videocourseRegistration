@@ -29,16 +29,21 @@ function registerUser()
 
     wp_create_user($data['userLogin'], $data['userPassword'], $data['userEmail']);
     $user = get_user_by('slug', $data['userLogin']);
-    $user_id = $user->ID;
-    //updateUserMeta($user_id, $data)
+
+    $userMetaData = [
+        'user_login'           => $data['userLogin'],
+        'first_name'           => $data['userFirstName'],
+        'last_name'            => $data['userLastName'],
+        'meta_input'           => [
+            'userGender' => $data['userGender'],
+            'userKommune' => $data['userKommune'],
+            'Unternehmen' => '',
+            'videoTracking' => '',
+        ],
+    ];
+
+    wp_insert_user($userMetaData);
+
     wp_send_json('done');
     wp_die();
-}
-
-/* add meta data to meta fields */
-function updateUserMeta($user_id, $data)
-{
-    //foreach ($metadata as $key => $value) {
-      //  update_user_meta($user_id, $key, $value);
-    //}
 }

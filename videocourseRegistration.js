@@ -63,19 +63,19 @@ class UserRegister {
           <label>Anrede:</label>
           <div class="form-group">
               <div class="form-control">
-                  <input class="form-input" type="radio" value="female" id="female" name="anredeGroup" required>
+                  <input class="form-input" type="radio" value="female" id="female" name="userGender" required>
                   <label for="female">Frau</label> 
               </div>    
           </div>
           <div class="form-group">
               <div class="form-control">
-                  <input class="form-input" type="radio" value="male" id="male" name="anredeGroup" required>
+                  <input class="form-input" type="radio" value="male" id="male" name="userGender" required>
                   <label for="male">Herr</label> 
               </div>    
           </div>
           <div class="form-group">
               <div class="form-control">
-                  <input class="form-input" type="radio" value="other" id="other" name="anredeGroup" required>
+                  <input class="form-input" type="radio" value="other" id="other" name="userGender" required>
                   <label for="other">Divers</label>   
             </div>  
           </div>
@@ -93,7 +93,7 @@ class UserRegister {
         </div>
         <div class="form-group">
               <div class="form-control">
-                  <select class="form-input" name="userMunicipality" data-id="userMunicipality" title="Stadt / Kommune" required>
+                  <select class="form-input" name="uuserKommune" data-id="userMunicipality" title="Stadt / Kommune" required>
                     <option value="" selected disabled>Stadt / Kommune</option>
                     <option value="BadenWürttemberg" name="BadenWürttemberg">Baden-Württemberg</option>
                     <option value="Bayern" name="Bayern">Bayern</option>
