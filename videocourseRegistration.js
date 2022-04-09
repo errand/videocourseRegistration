@@ -250,7 +250,7 @@ class UserRegister {
             });
 
             dataObjects = JSON.stringify(dataObjects);
-            console.log(dataObjects);
+            //console.log(dataObjects);
             const data = new FormData();
 
             data.append( 'action', 'registerUser' );
