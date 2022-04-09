@@ -28,7 +28,16 @@ function registerUser()
     $data = json_decode($data, true);
 
     wp_create_user($data['userLogin'], $data['userPassword'], $data['userEmail']);
-
+    //$user_id = get_current_user_id();
+    //updateUserMeta($user_id, $data)
     wp_send_json($data);
     wp_die();
+}
+
+/* add meta dta to meta fields */
+function updateUserMeta($user_id, $metadata)
+{
+    foreach ($metadata as $key => $value) {
+        update_user_meta($user_id, $key, $value);
+    }
 }
