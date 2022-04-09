@@ -231,12 +231,12 @@ class UserRegister {
     registerUser (target) {
         if (this.validateForm(target)) {
             let user = '';
-            let dataObjects = [];
+            let dataObjects = {};
             const form = target.closest('#videoRegistrationForm')
             const inputs = form.querySelectorAll('input')
             Array.from(inputs).forEach(input => {
                 if (input.type != 'radio' || input.type === 'radio' && input.checked) {
-                    dataObjects.push({
+                    Object.assign(dataObjects,{
                         [input.name]:input.value
                     })
                 }
@@ -244,7 +244,7 @@ class UserRegister {
             })
 
             dataObjects = JSON.stringify(dataObjects);
-            console.log(dataObjects);
+            //console.log(dataObjects);
             const data = new FormData();
 
             data.append( 'action', 'registerUser' );

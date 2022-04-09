@@ -24,9 +24,9 @@ add_action("wp_ajax_nopriv_registerUser", "registerUser");
 
 function registerUser()
 {
-    $inputs = $_POST['inputs'];
-    $inputs = stripslashes(html_entity_decode($inputs));
+    $inputs = stripslashes(html_entity_decode($_POST['inputs']));
     $inputs = json_decode($inputs, true);
-    wp_send_json($inputs);
+
+    wp_send_json($inputs['anredeGroup']);
     wp_die();
 }
