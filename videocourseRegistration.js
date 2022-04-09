@@ -93,7 +93,7 @@ class UserRegister {
         </div>
         <div class="form-group">
               <div class="form-control">
-                  <select class="form-input" name="userKommune" data-id="userMunicipality" title="Stadt / Kommune" required>
+                  <select class="form-input" name="userKommune" id="userKommune" data-id="userKommune" title="Stadt / Kommune" required>
                     <option value="" selected disabled>Stadt / Kommune</option>
                     <option value="BadenWürttemberg" name="BadenWürttemberg">Baden-Württemberg</option>
                     <option value="Bayern" name="Bayern">Bayern</option>
@@ -232,6 +232,7 @@ class UserRegister {
         if (this.validateForm(target)) {
             let user = '';
             let dataObjects = {};
+            let userKommune;
             const form = target.closest('#videoRegistrationForm')
             const inputs = form.querySelectorAll('input')
             Array.from(inputs).forEach(input => {
@@ -242,6 +243,11 @@ class UserRegister {
                 }
                 user = user + input.name + '=' + input.value + '&';
             })
+            //just for select user Kommune ))
+            userKommune = document.getElementById('userKommune');
+            Object.assign(dataObjects,{
+                'userKommune': userKommune.value
+            });
 
             dataObjects = JSON.stringify(dataObjects);
             console.log(dataObjects);
