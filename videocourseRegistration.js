@@ -264,7 +264,7 @@ class UserRegister {
                 .then(response => response.json())
                 .then(data => {
                     if (data) {
-                        console.log(data)
+                        //console.log(data)
                         this.modal.remove()
                         this.container.classList.remove('blocked')
                         _paq.push(['trackEvent', 'VideoCourse', 'Registration', 'User', user])
