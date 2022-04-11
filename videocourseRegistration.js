@@ -261,7 +261,6 @@ class UserRegister {
                 .then(response => response.json())
                 .then(data => {
                     if (data) {
-                        //console.log(data)
                         this.modal.remove()
                         this.container.classList.remove('blocked')
                         _paq.push(['trackEvent', 'VideoCourse', 'Registration', 'User', userEmail])
@@ -314,7 +313,8 @@ class UserRegister {
         })
           .then(response => response.json())
           .then(data => {
-              if (data && data.loggedin) {
+              const parsed = JSON.parse(data)
+              if (data && parsed.loggedin) {
                   window.location.reload()
               } else {
                   form.querySelector('.log').style.display = 'block'
