@@ -28,16 +28,17 @@ function registerUser()
     $data = json_decode($data, true);
 
     $userMetaData = [
-        'user_login'           => $data['userLogin'],
-        'user_email'           => $data['userEmail'],
-        'user_password'        => $data['userPassword'],
-        'first_name'           => $data['userFirstName'],
-        'last_name'            => $data['userLastName'],
+        'user_login'    => $data['userLogin'],
+        'user_email'    => $data['userEmail'],
+        'user_password' => $data['userPassword'],
+        'first_name'    => $data['userFirstName'],
+        'last_name'     => $data['userLastName'],
         'meta_input'           => [
-            'userGender' => $data['userGender'],
-            'userKommune' => $data['userKommune'],
-            'Unternehmen' => '',
-            'videoTracking' => '',
+            'userGender'       => $data['userGender'],
+            'userKommune'      => $data['userKommune'],
+            'userUnternehmen'  => $data['userCompany'],
+            'userPrivatperson' => $data['userIndividual'],
+            'videoTracking'    => '',
         ],
     ];
 

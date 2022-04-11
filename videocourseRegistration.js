@@ -250,7 +250,7 @@ class UserRegister {
             });
 
             dataObjects = JSON.stringify(dataObjects);
-            //console.log(dataObjects);
+            console.log(dataObjects);
             const data = new FormData();
 
             data.append( 'action', 'registerUser' );
@@ -264,7 +264,7 @@ class UserRegister {
                 .then(response => response.json())
                 .then(data => {
                     if (data) {
-                        //console.log(data)
+                        console.log(data)
                         this.modal.remove()
                         this.container.classList.remove('blocked')
                         _paq.push(['trackEvent', 'VideoCourse', 'Registration', 'User', user])
