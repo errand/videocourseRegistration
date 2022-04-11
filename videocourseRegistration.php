@@ -45,3 +45,31 @@ function registerUser()
     wp_send_json($data['userKommune']);
     wp_die();
 }
+
+add_action("wp_ajax_logoutUser", "logoutUser");
+add_action("wp_ajax_nopriv_logoutUser", "logoutUser");
+
+function logoutUser(){
+  wp_logout();
+  ob_clean();
+  wp_send_json_success();
+}
+
+add_action("wp_ajax_loginUser", "loginUser");
+add_action("wp_ajax_nopriv_loginUser", "loginUser");
+
+function loginUser(){
+
+  $data = array();
+  $data['user_login'] = $_POST['login'];
+  $data['user_password'] = $_POST['password'];
+
+  $user_signon = wp_signon( $data, false );
+  if ( is_wp_error($user_signon) ){
+    wp_send_json(json_encode(array('loggedin'=>false, 'message'=>__('Wrong username or password.'))));
+  } else {
+    wp_send_json_success();
+  }
+
+  die();
+}

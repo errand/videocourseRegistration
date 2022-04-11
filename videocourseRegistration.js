@@ -11,12 +11,15 @@ class UserRegister {
 
     resolveElements () {
         this.user = document.querySelector('html').classList.contains('logged-in')
-        this.loginButton = document.getElementById('authButton')
+        this.popupButton = document.getElementById('authButton')
+        this.logoutButton = document.getElementById('logoutButton')
     }
 
     addEventListeners () {
         if (!this.user) {
-            this.loginButton.addEventListener('click', () => this.showRegistrationModal())
+            this.popupButton.addEventListener('click', () => this.showRegistrationModal())
+        } else {
+            this.logoutButton.addEventListener('click', () => this.logout())
         }
     }
 
@@ -26,7 +29,7 @@ class UserRegister {
             this.container.classList.add('blocked')
         } else {
             this.container.classList.remove('blocked')
-            this.loginButton.style.display = 'none'
+            this.popupButton.style.display = 'none'
         }
     }
 
@@ -149,7 +152,7 @@ class UserRegister {
         document.body.appendChild(this.modal)
         document.getElementById('modalClose').addEventListener('click', () => this.modal.remove())
         document.getElementById('registerSubmit').addEventListener('click', ev => this.registerUser(ev.target))
-        document.getElementById('loginSubmit').addEventListener('click', ev => this.loginUser(ev.target))
+        document.getElementById('loginSubmit').addEventListener('click', e => this.login(e))
         document.querySelector('[data-action="login"]').addEventListener('click', () => {
             document.querySelector('[data-tab="register"]').style.display = 'none';
             document.querySelector('[data-tab="login"]').style.display = 'block';
@@ -223,25 +226,19 @@ class UserRegister {
         return wrong === 0
     }
 
-    loginUser (target) {
-        if (this.validateForm(target)) {
-            console.log('go login')
-        }
-    }
     registerUser (target) {
         if (this.validateForm(target)) {
-            let user = '';
             let dataObjects = {};
             let userKommune;
             const form = target.closest('#videoRegistrationForm')
             const inputs = form.querySelectorAll('input')
+            const userEmail = form.querySelector('[data-id="userEmail"]').value
             Array.from(inputs).forEach(input => {
                 if (input.type != 'radio' || input.type === 'radio' && input.checked) {
                     Object.assign(dataObjects,{
                         [input.name]:input.value
                     })
                 }
-                user = user + input.name + '=' + input.value + '&';
             })
             //just for select user Kommune ))
             userKommune = document.getElementById('userKommune');
@@ -267,7 +264,7 @@ class UserRegister {
                         //console.log(data)
                         this.modal.remove()
                         this.container.classList.remove('blocked')
-                        _paq.push(['trackEvent', 'VideoCourse', 'Registration', 'User', user])
+                        _paq.push(['trackEvent', 'VideoCourse', 'Registration', 'User', userEmail])
                     }
                 })
                 .catch((error) => {
@@ -275,6 +272,60 @@ class UserRegister {
                     console.error(error);
                 });
         }
+    }
+
+    logout() {
+        const data = new FormData();
+        data.append( 'action', 'logoutUser' );
+        fetch(videocourseRegistration.ajax_url, {
+            method: "POST",
+            credentials: 'same-origin',
+            body: data
+        })
+          .then(response => response.json())
+          .then(data => {
+              if (data) {
+                  window.location.reload()
+              }
+          })
+          .catch((error) => {
+              console.log('[Video Registration]');
+              console.error(error);
+          });
+    }
+
+    login(e) {
+        if (!this.validateForm(e.target)) {
+            return
+        }
+        const form = e.target.closest('.form');
+        const login = form.querySelector('[data-id="userLogin"]').value
+        const password = form.querySelector('[data-id="userPassword"]').value
+
+        const data = new FormData();
+        data.append( 'action', 'loginUser' );
+        data.append( 'login', login );
+        data.append( 'password', password );
+
+        fetch(videocourseRegistration.ajax_url, {
+            method: "POST",
+            credentials: 'same-origin',
+            body: data
+        })
+          .then(response => response.json())
+          .then(data => {
+              if (data && data.loggedin) {
+                  window.location.reload()
+              } else {
+                  form.querySelector('.log').style.display = 'block'
+                  form.querySelector('.log').innerText = 'Falscher Benutzername oder falsches Passwort'
+              }
+
+          })
+          .catch((error) => {
+              console.log('[Video Registration Login]');
+              console.error(error);
+          });
     }
 }
 
