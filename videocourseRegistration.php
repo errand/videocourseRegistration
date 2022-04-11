@@ -13,7 +13,7 @@ function videocourseRegistration_enqueue_script()
 {
     wp_enqueue_script('ajax_videocourseRegistration', plugin_dir_url(__FILE__) . 'videocourseRegistration.js', '', '', true);
     wp_localize_script('ajax_videocourseRegistration', 'videocourseRegistration', [
-      'ajax_url' => admin_url('admin-ajax.php'),
+        'ajax_url' => admin_url('admin-ajax.php'),
     ]);
 }
 
@@ -28,21 +28,48 @@ function registerUser()
     $data = json_decode($data, true);
 
     $userMetaData = [
-        'user_login'    => $data['userLogin'],
-        'user_email'    => $data['userEmail'],
-        'user_password' => $data['userPassword'],
-        'first_name'    => $data['userFirstName'],
-        'last_name'     => $data['userLastName'],
+        'user_login'           => $data['userLogin'],
+        'user_email'           => $data['userEmail'],
+        'user_password'        => $data['userPassword'],
+        'first_name'           => $data['userFirstName'],
+        'last_name'            => $data['userLastName'],
         'meta_input'           => [
-            'userGender'       => $data['userGender'],
-            'userKommune'      => $data['userKommune'],
-            'userUnternehmen'  => $data['userCompany'],
-            'userPrivatperson' => $data['userIndividual'],
-            'videoTracking'    => '',
+            'userGender' => $data['userGender'],
+            'userKommune' => $data['userKommune'],
+            'Unternehmen' => '',
+            'videoTracking' => '',
         ],
     ];
 
     wp_insert_user($userMetaData);
     wp_send_json($data['userKommune']);
     wp_die();
+}
+
+add_action("wp_ajax_logoutUser", "logoutUser");
+add_action("wp_ajax_nopriv_logoutUser", "logoutUser");
+
+function logoutUser(){
+    wp_logout();
+    ob_clean();
+    wp_send_json_success();
+}
+
+add_action("wp_ajax_loginUser", "loginUser");
+add_action("wp_ajax_nopriv_loginUser", "loginUser");
+
+function loginUser(){
+
+    $data = array();
+    $data['user_login'] = $_POST['login'];
+    $data['user_password'] = $_POST['password'];
+
+    $user_signon = wp_signon( $data, false );
+    if ( is_wp_error($user_signon) ){
+        wp_send_json(json_encode(array('loggedin'=>false, 'message'=>__('Wrong username or password.'))));
+    } else {
+        wp_send_json_success();
+    }
+
+    die();
 }
