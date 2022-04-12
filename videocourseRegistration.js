@@ -19,7 +19,9 @@ class UserRegister {
         if (!this.user) {
             this.popupButton.addEventListener('click', () => this.showRegistrationModal())
         } else {
-            this.logoutButton.addEventListener('click', () => this.logout())
+            if(this.logoutButton) {
+                this.logoutButton.addEventListener('click', () => this.logout())
+            }
         }
     }
 
