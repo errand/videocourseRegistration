@@ -67,9 +67,9 @@ class UserRegister {
           <div class="form-control">
               <select class="form-input" name="userAnrede" id="userAnrede" data-id="userAnrede" title="Anrede" required>
                     <option value="" selected disabled>Anrede</option>
-                    <option value="female" name="Frau">Frau</option>
-                    <option value="male" name="Herr">Herr</option>
-                    <option value="other" name="Berlin">Divers</option>
+                    <option value="Frau" name="Frau">Frau</option>
+                    <option value="Herr" name="Herr">Herr</option>
+                    <option value="Divers" name="Berlin">Divers</option>
               </select>
           </div>  
         <div class="form-row">
@@ -111,11 +111,11 @@ class UserRegister {
         <div class="form-row">
         <div class="form-group">
           <div class="form-control">
-          <input class="form-input" type="radio" value="Individual" name="userIndividual" id="userIndividual" data-id="userIndividual"> 
+          <input class="form-input" type="radio" value="userIndividual" name="userIndividual" id="userIndividual" data-id="userIndividual"> 
           <label for="userIndividual">Privatperson</label></div>
         </div>
           <div class="form-control">
-          <input class="form-input" type="radio" name="userIndividual" value="sonstige" id="userSonstige" data-id="userSonstige"> 
+          <input class="form-input" type="radio" name="userIndividual" value="userSonstige" id="userSonstige" data-id="userSonstige"> 
           <label for="userSonstige">Sonstige</label>
           </div>
         </div>
@@ -219,7 +219,6 @@ class UserRegister {
         if (this.validateForm(target)) {
             let dataObjects = {};
             let userKommune;
-            let userAnrede;
             const form = target.closest('#videoRegistrationForm')
             const inputs = form.querySelectorAll('input')
             const userPassword = form.querySelector('[data-id="userPassword"]').value
@@ -232,18 +231,13 @@ class UserRegister {
                 }
             })
             //just for select user Kommune ))
-            userKommune = document.getElementById('userKommune');
+            userKommune = document.getElementById('userStadtKommune');
             Object.assign(dataObjects,{
                 'userKommune': userKommune.value
             });
-            //and for for select user Anrede ))
-            userAnrede = document.getElementById('userAnrede');
-            Object.assign(dataObjects,{
-                'userAnrede': userAnrede.value
-            });
 
             dataObjects = JSON.stringify(dataObjects);
-            console.log(dataObjects);
+            //console.log(dataObjects);
             const data = new FormData();
 
             data.append( 'action', 'registerUser' );
@@ -257,7 +251,6 @@ class UserRegister {
                 .then(response => response.json())
                 .then(data => {
                     if (data) {
-                        console.log(data)
                         this.modal.remove()
                         this.container.classList.remove('blocked')
                         _paq.push(['trackEvent', 'VideoCourse', 'Registration', 'User', userEmail])
@@ -280,16 +273,16 @@ class UserRegister {
             credentials: 'same-origin',
             body: data
         })
-            .then(response => response.json())
-            .then(data => {
-                if (data) {
-                    window.location.reload()
-                }
-            })
-            .catch((error) => {
-                console.log('[Video Registration]');
-                console.error(error);
-            });
+          .then(response => response.json())
+          .then(data => {
+              if (data) {
+                  window.location.reload()
+              }
+          })
+          .catch((error) => {
+              console.log('[Video Registration]');
+              console.error(error);
+          });
     }
 
     loginAfterRegister(input) {
@@ -337,20 +330,21 @@ class UserRegister {
             credentials: 'same-origin',
             body: data
         })
-            .then(response => response.json())
-            .then(data => {
-                if (data && data.loggedin) {
-                    window.location.reload()
-                } else {
-                    form.querySelector('.log').style.display = 'block'
-                    form.querySelector('.log').innerText = 'Falscher Benutzername oder falsches Passwort'
-                }
+          .then(response => response.json())
+          .then(data => {
+              const parsed = JSON.parse(data)
+              if (data && parsed.loggedin) {
+                  window.location.reload()
+              } else {
+                  form.querySelector('.log').style.display = 'block'
+                  form.querySelector('.log').innerText = 'Falscher Benutzername oder falsches Passwort'
+              }
 
-            })
-            .catch((error) => {
-                console.log('[Video Registration Login]');
-                console.error(error);
-            });
+          })
+          .catch((error) => {
+              console.log('[Video Registration Login]');
+              console.error(error);
+          });
     }
 }
 
