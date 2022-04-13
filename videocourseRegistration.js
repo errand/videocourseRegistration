@@ -19,7 +19,9 @@ class UserRegister {
         if (!this.user) {
             this.popupButton.addEventListener('click', () => this.showRegistrationModal())
         } else {
-            this.logoutButton.addEventListener('click', () => this.logout())
+            if(this.logoutButton) {
+                this.logoutButton.addEventListener('click', () => this.logout())
+            }
         }
     }
 
@@ -62,27 +64,14 @@ class UserRegister {
       </div>
       <div data-tab="register" style="display: none">
       <form id="videoRegistrationForm" class="form">
-      <div class="form-row">
-          <label>Anrede:</label>
-          <div class="form-group">
-              <div class="form-control">
-                  <input class="form-input" type="radio" value="female" id="female" name="userGender" required>
-                  <label for="female">Frau</label> 
-              </div>    
-          </div>
-          <div class="form-group">
-              <div class="form-control">
-                  <input class="form-input" type="radio" value="male" id="male" name="userGender" required>
-                  <label for="male">Herr</label> 
-              </div>    
-          </div>
-          <div class="form-group">
-              <div class="form-control">
-                  <input class="form-input" type="radio" value="other" id="other" name="userGender" required>
-                  <label for="other">Divers</label>   
-            </div>  
-          </div>
-        </div>
+          <div class="form-control">
+              <select class="form-input" name="userAnrede" id="userAnrede" data-id="userAnrede" title="Anrede" required>
+                    <option value="" selected disabled>Anrede</option>
+                    <option value="Frau" name="Frau">Frau</option>
+                    <option value="Herr" name="Herr">Herr</option>
+                    <option value="Divers" name="Berlin">Divers</option>
+              </select>
+          </div>  
         <div class="form-row">
             <div class="form-group">
               <div class="form-control"><input class="form-input" type="text" name="userLastName" data-id="userLastName" placeholder="Vorname" required></div>
@@ -232,6 +221,7 @@ class UserRegister {
             let userKommune;
             const form = target.closest('#videoRegistrationForm')
             const inputs = form.querySelectorAll('input')
+            const userPassword = form.querySelector('[data-id="userPassword"]').value
             const userEmail = form.querySelector('[data-id="userEmail"]').value
             Array.from(inputs).forEach(input => {
                 if (input.type != 'radio' || input.type === 'radio' && input.checked) {
@@ -265,6 +255,7 @@ class UserRegister {
                         this.modal.remove()
                         this.container.classList.remove('blocked')
                         _paq.push(['trackEvent', 'VideoCourse', 'Registration', 'User', userEmail])
+                        this.loginAfterRegister({login: userEmail, password: userPassword})
                     }
                 })
                 .catch((error) => {
@@ -294,13 +285,40 @@ class UserRegister {
             });
     }
 
+    loginAfterRegister(input) {
+        const data = new FormData();
+        data.append( 'action', 'loginUser' );
+        data.append( 'login', input.login );
+        data.append( 'password', input.password );
+
+        fetch(videocourseRegistration.ajax_url, {
+            method: "POST",
+            credentials: 'same-origin',
+            body: data
+        })
+          .then(response => response.json())
+          .then(data => {
+              const parsed = JSON.parse(data)
+              if (data && parsed.loggedin) {
+                  window.location.reload()
+              }
+
+          })
+          .catch((error) => {
+              console.log('[Video Registration Login]');
+              console.error(error);
+          });
+    }
+
     login(e) {
-        if (!this.validateForm(e.target)) {
-            return
-        }
-        const form = e.target.closest('.form');
-        const login = form.querySelector('[data-id="userLogin"]').value
-        const password = form.querySelector('[data-id="userPassword"]').value
+            if (!this.validateForm(e.target)) {
+                return
+            }
+            const form = e.target.closest('.form');
+            const login = form.querySelector('[data-id="userLogin"]').value
+            const password = form.querySelector('[data-id="userPassword"]').value
+
+
 
         const data = new FormData();
         data.append( 'action', 'loginUser' );
