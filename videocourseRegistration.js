@@ -67,9 +67,9 @@ class UserRegister {
           <div class="form-control">
               <select class="form-input" name="userAnrede" id="userAnrede" data-id="userAnrede" title="Anrede" required>
                     <option value="" selected disabled>Anrede</option>
-                    <option value="Frau" name="Frau">Frau</option>
-                    <option value="Herr" name="Herr">Herr</option>
-                    <option value="Divers" name="Berlin">Divers</option>
+                    <option value="female" name="Frau">Frau</option>
+                    <option value="male" name="Herr">Herr</option>
+                    <option value="other" name="Divers">Divers</option>
               </select>
           </div>  
         <div class="form-row">
@@ -219,7 +219,7 @@ Ein Passwort sollte mindestens 10 Zeichen lang sein. Es muss aus Groß- und Klei
                 }
             })
             //just for select user Kommune ))
-            userKommune = document.getElementById('userKommune');
+            userKommune = document.getElementById('userStadtKommune');
             Object.assign(dataObjects,{
                 'userKommune': userKommune.value
             });
@@ -242,7 +242,8 @@ Ein Passwort sollte mindestens 10 Zeichen lang sein. Es muss aus Groß- und Klei
                         this.modal.remove()
                         this.container.classList.remove('blocked')
                         _paq.push(['trackEvent', 'VideoCourse', 'Registration', 'User', userEmail])
-                        this.loginAfterRegister({login: userEmail, password: userPassword})
+                        document.location.reload(true);
+                        //this.loginAfterRegister({login: userEmail, password: userPassword})
                     }
                 })
                 .catch((error) => {
