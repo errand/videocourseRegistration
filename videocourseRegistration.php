@@ -28,28 +28,42 @@ function registerUser()
     $data = json_decode($data, true);
 
     $userMetaData = [
-        'user_login'           => $data['userLogin'],
-        'user_email'           => $data['userEmail'],
-        'user_password'        => $data['userPassword'],
-        'first_name'           => $data['userFirstName'],
-        'last_name'            => $data['userLastName'],
-        'meta_input'           => [
-            'userGender' => $data['userGender'],
-            'userKommune' => $data['userKommune'],
-            'Unternehmen' => '',
-            'videoTracking' => '',
+        'user_login'            => $data['userLogin'],
+        'user_email'            => $data['userEmail'],
+        'user_pass'             => $data['userPassword'],
+        'first_name'            => $data['userFirstName'],
+        'last_name'             => $data['userLastName'],
+        'show_admin_bar_front'  => false,
+        'meta_input'            => [
+            'userGender'       => $data['userAnrede'],
+            'userKommune'      => $data['userKommune'],
+            'userUnternehmen'  => $data['userCompany'],
+            'userPrivatperson' => $data['userIndividual'],
+            'videoTracking'    => '',
         ],
     ];
 
-    wp_insert_user($userMetaData);
-    wp_send_json($data['userKommune']);
+    $user_id = wp_insert_user($userMetaData);
+    auto_login_new_user($user_id);
+    wp_send_json($user_id);
     wp_die();
 }
+
+function auto_login_new_user($user_id)
+{
+    wp_set_current_user($user_id);
+    wp_set_auth_cookie($user_id);
+    $user = get_user_by('id', $user_id);
+    do_action('wp_login', $user->user_login);
+    return;
+}
+add_action('user_register', 'auto_login_new_user');
 
 add_action("wp_ajax_logoutUser", "logoutUser");
 add_action("wp_ajax_nopriv_logoutUser", "logoutUser");
 
-function logoutUser(){
+function logoutUser()
+{
     wp_logout();
     ob_clean();
     wp_send_json_success();
@@ -58,14 +72,15 @@ function logoutUser(){
 add_action("wp_ajax_loginUser", "loginUser");
 add_action("wp_ajax_nopriv_loginUser", "loginUser");
 
-function loginUser(){
+function loginUser()
+{
 
     $data = array();
     $data['user_login'] = $_POST['login'];
     $data['user_password'] = $_POST['password'];
 
-    $user_signon = wp_signon( $data, false );
-    if ( is_wp_error($user_signon) ){
+    $user_signon = wp_signon($data, false);
+    if (is_wp_error($user_signon)) {
         wp_send_json(json_encode(array('loggedin'=>false, 'message'=>__('Wrong username or password.'))));
     } else {
         wp_send_json_success();
