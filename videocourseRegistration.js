@@ -84,49 +84,37 @@ class UserRegister {
           <div class="form-control"><input class="form-input" type="email" name="userEmail" data-id="userEmail" placeholder="E-Mail" required></div>
         </div>
         <div class="form-group">
-              <div class="form-control">
-                  <select class="form-input" name="userKommune" id="userKommune" data-id="userKommune" title="Stadt / Kommune" required>
-                    <option value="" selected disabled>Stadt / Kommune</option>
-                    <option value="BadenWürttemberg" name="BadenWürttemberg">Baden-Württemberg</option>
-                    <option value="Bayern" name="Bayern">Bayern</option>
-                    <option value="Berlin" name="Berlin">Berlin</option>
-                    <option value="Brandenburg" name="Brandenburg">Brandenburg</option>
-                    <option value="Bremen" name="Bremen">Bremen</option>
-                    <option value="Hamburg" name="Hamburg">Hamburg</option>
-                    <option value="Hessen" name="Hessen">Hessen</option>
-                    <option value="MecklenburgVorpommern" name="MecklenburgVorpommern">Mecklenburg-Vorpommern</option>
-                    <option value="Niedersachsen" name="Niedersachsen">Niedersachsen</option>
-                    <option value="NordrheinWestfalen" name="NordrheinWestfalen">Nordrhein-Westfalen</option>
-                    <option value="RheinlandPfalz" name="RheinlandPfalz">Rheinland-Pfalz</option>
-                    <option value="Saarland" name="Saarland">Saarland</option>
-                    <option value="SachsenAnhalt" name="SachsenAnhalt">Sachsen-Anhalt</option>
-                    <option value="SchleswigHolstein" name="SchleswigHolstein">Schleswig-Holstein</option>
-                    <option value="Thüringen" name="Thüringen">Thüringen</option>
-                  </select>
-              </div>
-            </div>
-        <div class="form-group">
-          <div class="form-control"><input class="form-input" type="text" name="userCompany" data-id="userCompany" placeholder="Unternehmen"></div>
-        </div>
-        <div class="form-row">
-        <div class="form-group">
           <div class="form-control">
-          <input class="form-input" type="radio" value="userIndividual" name="userIndividual" id="userIndividual" data-id="userIndividual"> 
-          <label for="userIndividual">Privatperson</label></div>
-        </div>
-          <div class="form-control">
-          <input class="form-input" type="radio" name="userIndividual" value="userSonstige" id="userSonstige" data-id="userSonstige"> 
-          <label for="userSonstige">Sonstige</label>
+              <select class="form-input" name="userStadtKommune" id="userStadtKommune" data-id="userStadtKommune" title="Stadt / Kommune" required>
+                <option value="" selected disabled>Bitte auswählen</option>
+                <option value="stadtKommune" name="stadtKommune">Stadt / Kommune</option>
+                <option value="Unternehmen" name="Unternehmen">Unternehmen</option>
+                <option value="Privatperson" name="Privatperson">Privatperson</option>
+                <option value="Sonstige" name="Sonstige">Sonstige</option>                    
+              </select>
           </div>
         </div>
         <div class="form-group">
           <div class="form-control"><input class="form-input" type="text" name="userLogin" data-id="userLogin" placeholder="Login" required></div>
         </div>
-        <div class="form-group">
-          <div class="form-control"><input class="form-input" type="password" name="userPassword" data-id="userPassword" placeholder="Passwort" required></div>
+        <div class="form-row">
+          <div class="form-group" style="flex: 2">
+              <div class="form-control"><input class="form-input" type="password" name="userPassword" data-id="userPassword" placeholder="Passwort" required></div>
+              <div class="form-control"><input class="form-input" type="password" name="userPasswordConfirm" data-id="userPasswordConfirm" placeholder="Passwort erneut eingeben" required></div>
+            </div>
+            
+        <div class="form-group info">
+          <svg xmlns="http://www.w3.org/2000/svg" width="46" height="40" viewBox="0 0 46 40" class="svg-trigger">
+          <g transform="translate(3)" fill="#fff" stroke="#a3a7a9" stroke-width="1">
+            <circle cx="20" cy="20" r="20" stroke="none"/>
+            <circle cx="20" cy="20" r="19.5" fill="none"/>
+          </g>
+          <text id="i" transform="translate(0 6)" fill="#a3a7a9" font-size="24" font-family="SegoeUI-Light, Segoe UI" font-weight="300"><tspan x="20.539" y="26">i</tspan></text>
+        </svg>
+          <div class="text">Passwortvorgaben: 
+Ein Passwort sollte mindestens 10 Zeichen lang sein. Es muss aus Groß- und Kleinbuchstaben, Zahlen und Sonderzeichen.
+</div>
         </div>
-        <div class="form-group">
-          <div class="form-control"><input class="form-input" type="password" name="userPasswordConfirm" data-id="userPasswordConfirm" placeholder="Passwort erneut eingeben" required></div>
         </div>
         <button type="button" id="registerSubmit">Registrieren</button>    
         
