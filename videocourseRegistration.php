@@ -45,7 +45,7 @@ function registerUser()
 
     $user_id = wp_insert_user($userMetaData);
     auto_login_new_user($user_id);
-    wp_send_json($user_id);
+    wp_send_json_success();
     wp_die();
 }
 
