@@ -326,8 +326,7 @@ Ein Passwort sollte mindestens 10 Zeichen lang sein. Es muss aus Groß- und Klei
         })
             .then(response => response.json())
             .then(data => {
-                const parsed = JSON.parse(data)
-                if (data && parsed.loggedin) {
+                if (data.loggedin) {
                     window.location.reload()
                 } else {
                     form.querySelector('.log').style.display = 'block'

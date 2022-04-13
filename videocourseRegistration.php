@@ -82,7 +82,8 @@ function loginUser()
     if (is_wp_error($user_signon)) {
         wp_send_json(json_encode(array('loggedin'=>false, 'message'=>__('Wrong username or password.'))));
     } else {
-        wp_send_json_success();
+        $data['loggedin'] = true;
+        wp_send_json($data);
     }
 
     die();
