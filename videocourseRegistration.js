@@ -207,6 +207,7 @@ Ein Passwort sollte mindestens 10 Zeichen lang sein. Es muss aus Groß- und Klei
         if (this.validateForm(target)) {
             let dataObjects = {};
             let userKommune;
+            let userAnrede;
             const form = target.closest('#videoRegistrationForm')
             const inputs = form.querySelectorAll('input')
             const userPassword = form.querySelector('[data-id="userPassword"]').value
@@ -222,6 +223,11 @@ Ein Passwort sollte mindestens 10 Zeichen lang sein. Es muss aus Groß- und Klei
             userKommune = document.getElementById('userStadtKommune');
             Object.assign(dataObjects,{
                 'userKommune': userKommune.value
+            });
+
+            userAnrede = document.getElementById('userAnrede');
+            Object.assign(dataObjects,{
+                'userAnrede': userAnrede.value
             });
 
             dataObjects = JSON.stringify(dataObjects);
