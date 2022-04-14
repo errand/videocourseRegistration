@@ -35,11 +35,9 @@ function registerUser()
         'last_name'             => $data['userLastName'],
         'show_admin_bar_front'  => false,
         'meta_input'            => [
-            'userGender'       => $data['userAnrede'],
-            'userKommune'      => $data['userKommune'],
-            'userUnternehmen'  => $data['userCompany'],
-            'userPrivatperson' => $data['userIndividual'],
-            'videoTracking'    => '',
+            'userAnrede'        => $data['userAnrede'],
+            'userStadtKommune'  => $data['userStadtKommune'],
+            'videoTracking'     => '',
         ],
     ];
 

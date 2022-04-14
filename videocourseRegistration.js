@@ -41,8 +41,13 @@ class UserRegister {
         this.modal.innerHTML = `
     <div class="modal-inner">
         <div id="modalClose">
-       close X
-</div>
+       <svg xmlns="http://www.w3.org/2000/svg" width="23.409" height="23.409" viewBox="0 0 23.409 23.409">
+          <g id="Сгруппировать_370"  transform="translate(-1531.379 -190.379)">
+            <line x2="19.166" y2="19.166" transform="translate(1533.5 192.5)" fill="none" stroke="#a3a7a9" stroke-linecap="round" stroke-width="3"/>
+            <line " x2="19.166" y2="19.166" transform="translate(1552.666 192.5) rotate(90)" fill="none" stroke="#a3a7a9" stroke-linecap="round" stroke-width="3"/>
+          </g>
+        </svg>
+      </div>
         <div class="modal-tabs">
         <div class="modal-tabs-header">
           <span data-action="login" class="active">Anmelden</span>
@@ -152,38 +157,7 @@ Ein Passwort sollte mindestens 10 Zeichen lang sein. Es muss aus Groß- und Klei
         for (const input of Array.from(inputs)) {
             input.closest('.form-control').classList.remove('invalid')
             log.style.display = 'none'
-            if(input.name === 'anrede-group') {
-                const parent = input.closest('.form-row');
-                let check1 = false;
-                const gender = document.getElementsByName('anrede-group');
-                for (const radioButton of gender) {
-                    if (radioButton.checked) {
-                        check1 = true;
-                    }
-                }
-                if (check1) {
-                    parent.classList.remove('invalid')
-                } else {
-                    parent.classList.add('invalid')
-                }
-            }
-            if(input.name === 'userIndividual') {
-                const parent2 = input.closest('.form-row');
-                let check2 = false;
-                const gender2 = document.getElementsByName('userIndividual');
-                for (const radioButton of gender2) {
-                    if (radioButton.checked) {
-                        check2 = true;
-                    }
-                }
-                if (check2) {
-                    parent2.classList.remove('invalid')
-                    form.querySelector('[data-id="userCompany"]').setAttribute('disabled', 'disabled')
-                    form.querySelector('[data-id="userCompany"]').closest('.form-control').classList.remove('invalid')
-                } else {
-                    parent2.classList.add('invalid')
-                }
-            } else if (input.value.trim() === '') {
+             if (input.value.trim() === '') {
                 wrong += 1
                 input.closest('.form-control').classList.add('invalid')
                 log.style.display = 'block'
@@ -200,6 +174,15 @@ Ein Passwort sollte mindestens 10 Zeichen lang sein. Es muss aus Groß- und Klei
             }
         }
 
+        const userPasswordConfirm = form.querySelector('data-id="userPasswordConfirm"').value;
+        const userPassword = form.querySelector('data-id="userPassword"').value;
+
+        if(userPassword !== userPasswordConfirm) {
+            log.style.display = 'block'
+            log.innerText = 'Passwörter müssen übereinstimmen'
+            wrong += 1
+        }
+
         return wrong === 0
     }
 
@@ -209,20 +192,11 @@ Ein Passwort sollte mindestens 10 Zeichen lang sein. Es muss aus Groß- und Klei
             let userKommune;
             let userAnrede;
             const form = target.closest('#videoRegistrationForm')
-            const inputs = form.querySelectorAll('input')
-            const userPassword = form.querySelector('[data-id="userPassword"]').value
             const userEmail = form.querySelector('[data-id="userEmail"]').value
-            Array.from(inputs).forEach(input => {
-                if (input.type != 'radio' || input.type === 'radio' && input.checked) {
-                    Object.assign(dataObjects,{
-                        [input.name]:input.value
-                    })
-                }
-            })
             //just for select user Kommune ))
             userKommune = document.getElementById('userStadtKommune');
             Object.assign(dataObjects,{
-                'userKommune': userKommune.value
+                'userStadtKommune': userKommune.value
             });
 
             userAnrede = document.getElementById('userAnrede');
@@ -249,7 +223,6 @@ Ein Passwort sollte mindestens 10 Zeichen lang sein. Es muss aus Groß- und Klei
                         this.container.classList.remove('blocked')
                         _paq.push(['trackEvent', 'VideoCourse', 'Registration', 'User', userEmail])
                         document.location.reload(true);
-                        //this.loginAfterRegister({login: userEmail, password: userPassword})
                     }
                 })
                 .catch((error) => {
@@ -279,31 +252,6 @@ Ein Passwort sollte mindestens 10 Zeichen lang sein. Es muss aus Groß- und Klei
             });
     }
 
-    loginAfterRegister(input) {
-        const data = new FormData();
-        data.append( 'action', 'loginUser' );
-        data.append( 'login', input.login );
-        data.append( 'password', input.password );
-
-        fetch(videocourseRegistration.ajax_url, {
-            method: "POST",
-            credentials: 'same-origin',
-            body: data
-        })
-            .then(response => response.json())
-            .then(data => {
-                const parsed = JSON.parse(data)
-                if (data && parsed.loggedin) {
-                    window.location.reload()
-                }
-
-            })
-            .catch((error) => {
-                console.log('[Video Registration Login]');
-                console.error(error);
-            });
-    }
-
     login(e) {
         if (!this.validateForm(e.target)) {
             return
@@ -311,8 +259,6 @@ Ein Passwort sollte mindestens 10 Zeichen lang sein. Es muss aus Groß- und Klei
         const form = e.target.closest('.form');
         const login = form.querySelector('[data-id="userLogin"]').value
         const password = form.querySelector('[data-id="userPassword"]').value
-
-
 
         const data = new FormData();
         data.append( 'action', 'loginUser' );
@@ -327,6 +273,7 @@ Ein Passwort sollte mindestens 10 Zeichen lang sein. Es muss aus Groß- und Klei
             .then(response => response.json())
             .then(data => {
                 if (data.loggedin) {
+                    _paq.push(['trackEvent', 'VideoCourse', 'Login', 'User', login])
                     window.location.reload()
                 } else {
                     form.querySelector('.log').style.display = 'block'
