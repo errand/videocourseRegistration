@@ -174,13 +174,16 @@ Ein Passwort sollte mindestens 10 Zeichen lang sein. Es muss aus Groß- und Klei
             }
         }
 
-        const userPasswordConfirm = form.querySelector('data-id="userPasswordConfirm"').value;
-        const userPassword = form.querySelector('data-id="userPassword"').value;
+        if (form.querySelector('[data-id="userPasswordConfirm"]')) {
 
-        if(userPassword !== userPasswordConfirm) {
-            log.style.display = 'block'
-            log.innerText = 'Passwörter müssen übereinstimmen'
-            wrong += 1
+            const userPasswordConfirm = form.querySelector('[data-id="userPasswordConfirm"]');
+            const userPassword = form.querySelector('[data-id="userPassword"]');
+
+            if(userPassword.value !== userPasswordConfirm.value) {
+                log.style.display = 'block'
+                log.innerText = 'Passwörter müssen übereinstimmen'
+                wrong += 1
+            }
         }
 
         return wrong === 0
