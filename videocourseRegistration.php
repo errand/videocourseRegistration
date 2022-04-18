@@ -9,6 +9,9 @@ Author: Aleksandr Shatskikh
 
 use Timber\PostQuery;
 
+include_once 'db.php';
+register_activation_hook(__FILE__, 'videocourse_install');
+
 function videocourseRegistration_enqueue_script()
 {
     wp_enqueue_script('ajax_videocourseRegistration', plugin_dir_url(__FILE__) . 'videocourseRegistration.js', '', '', true);
