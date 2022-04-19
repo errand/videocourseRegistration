@@ -2,13 +2,13 @@
 
 global $videocourse_db_version;
 $videocourse_db_version = "1.0";
+$table_name = $wpdb->prefix . "videocourse";
 
 function videocourse_install()
 {
     global $wpdb;
     global $videocourse_db_version;
 
-    $table_name = $wpdb->prefix . "videocourse";
     $charset_collate = "DEFAULT CHARACTER SET {$wpdb->charset} COLLATE {$wpdb->collate}";
 
     if ($wpdb->get_var("show tables like '$table_name'") != $table_name) {
@@ -41,7 +41,14 @@ function addAllVideos($id)
     $current_user = wp_get_current_user();
     $uid = $current_user->ID;
     //check if recordings exist
+    $result = $wpdb->get_results("SELECT * FROM $table_name WHERE `user_id` = $uid AND 'term_id' = $id");
     //if not - add an entry of all videos
+    if (!$result) {
+        //get posts by term_id
+        //foreach ($data as $key => $value) {
+        //add videos into table for this uid
+        //}
+    }
     wp_send_json_success();
     wp_die();
 }
@@ -53,7 +60,11 @@ function addVideo($id)
     $current_user = wp_get_current_user();
     $uid = $current_user->ID;
     //check if recordings exist
+    $result = $wpdb->get_results("SELECT * FROM $table_name WHERE `user_id` = $uid AND 'post_id' = $id");
     //if not - add an entry of this
+    if (!$result) {
+      //add video for this uid
+    }
     wp_send_json_success();
     wp_die();
 }
