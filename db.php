@@ -2,12 +2,13 @@
 
 global $videocourse_db_version;
 $videocourse_db_version = "1.0";
-$table_name = $wpdb->prefix . "videocourse";
+
 
 function videocourse_install()
 {
     global $wpdb;
     global $videocourse_db_version;
+    $table_name = $wpdb->prefix . "videocourse";
 
     $charset_collate = "DEFAULT CHARACTER SET {$wpdb->charset} COLLATE {$wpdb->collate}";
 
@@ -38,6 +39,7 @@ function addAllVideos($id)
 {
     //some code to add all videos from course to db with user id by course id
     global $wpdb;
+    $table_name = $wpdb->prefix . "videocourse";
     $current_user = wp_get_current_user();
     $uid = $current_user->ID;
     //check if recordings exist
@@ -57,6 +59,7 @@ function addVideo($id)
 {
     //some code to add video to db with user id by video id
     global $wpdb;
+    $table_name = $wpdb->prefix . "videocourse";
     $current_user = wp_get_current_user();
     $uid = $current_user->ID;
     //check if recordings exist
@@ -73,6 +76,7 @@ function countTotalTime($id)
 {
     //some code to count total time of videos from course by course id
     global $wpdb;
+    $table_name = $wpdb->prefix . "videocourse";
     //cycle of videos by course id to count total time
     //ajax
 }
@@ -80,6 +84,7 @@ function countTotalTime($id)
 function checkCurrentTime($id)
 {
     global $wpdb;
+    $table_name = $wpdb->prefix . "videocourse";
     $current_user = wp_get_current_user();
     $uid = $current_user->ID;
     //check 'done'
@@ -91,6 +96,7 @@ function checkCurrentTime($id)
 function renewVideoStatus($id)
 {
     global $wpdb;
+    $table_name = $wpdb->prefix . "videocourse";
     $current_user = wp_get_current_user();
     $uid = $current_user->ID;
     //renew status of video (current time, done) by id with ajax
