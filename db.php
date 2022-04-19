@@ -49,6 +49,7 @@ function addAllVideos($id)
         //get posts by term_id
         //foreach ($data as $key => $value) {
         //add videos into table for this uid
+        //$rows_affected = $wpdb->insert($table_name, array());
         //}
     }
     wp_send_json_success();
@@ -67,6 +68,7 @@ function addVideo($id)
     //if not - add an entry of this
     if (!$result) {
       //add video for this uid
+        //$rows_affected = $wpdb->insert($table_name, array());
     }
     wp_send_json_success();
     wp_die();
@@ -89,6 +91,7 @@ function checkCurrentTime($id)
     $uid = $current_user->ID;
     //check 'done'
     //total_time - current_time
+    //add new current time
     wp_send_json_success();
     wp_die();
 }
