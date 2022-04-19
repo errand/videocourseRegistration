@@ -86,3 +86,13 @@ function renewVideoStatus($id)
     wp_send_json_success();
     wp_die();
 }
+
+add_action("wp_ajax_addAllVideos", "addAllVideos");
+add_action("wp_ajax_nopriv_addAllVideos", "addAllVideos");
+add_action("wp_ajax_addVideo", "addVideo");
+add_action("wp_ajax_nopriv_addVideo", "addVideo");
+add_action("wp_ajax_checkCurrentTime", "checkCurrentTime");
+add_action("wp_ajax_nopriv_checkCurrentTime", "checkCurrentTime");
+add_action("wp_ajax_renewVideoStatus", "renewVideoStatus");
+add_action("wp_ajax_nopriv_renewVideoStatus", "renewVideoStatuse");
+//maybe combine checkCurrentTime & renewVideoStatus...
