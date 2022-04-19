@@ -37,14 +37,33 @@ function videocourse_install()
 function addAllVideos($id)
 {
     //some code to add all videos from course to db with user id by course id
+    global $wpdb;
+    $current_user = wp_get_current_user();
+    $uid = $current_user->ID;
+    //check if exist
+    //if not - add an entry of all videos
 }
 
 function addVideo($id)
 {
     //some code to add video to db with user id by video id
+    global $wpdb;
+    $current_user = wp_get_current_user();
+    $uid = $current_user->ID;
+    //check if exist
+    //if not - add an entry of this
 }
 
 function countTotalTime($id)
 {
     //some code to count total time of videos from course by course id
+    global $wpdb;
+    //cycle of videos by course id to count total time
+    //ajax my bee
+}
+
+function checkCurrentTime($id)
+{
+    //check 'done'
+    //total_time - current_time
 }
