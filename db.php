@@ -19,7 +19,8 @@ function videocourse_install()
 	  post_id int(11) NOT NULL,
 	  current int(11) NOT NULL,
 	  total int(11) NOT NULL,
-	  UNIQUE KEY id (id)
+	  done bool,
+ 	  UNIQUE KEY id (id)
 	){$charset_collate};";
 
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
