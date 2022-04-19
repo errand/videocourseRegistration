@@ -128,3 +128,4 @@ add_action("wp_ajax_renewVideoStatus", "renewVideoStatus");
 add_action("wp_ajax_nopriv_renewVideoStatus", "renewVideoStatuse");
 
 //maybe combine checkCurrentTime & renewVideoStatus... in javascript we must program right request
+//and we can try to shorten code with global variables
