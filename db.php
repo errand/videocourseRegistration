@@ -64,11 +64,17 @@ function countTotalTime($id)
 
 function checkCurrentTime($id)
 {
+    global $wpdb;
+    $current_user = wp_get_current_user();
+    $uid = $current_user->ID;
     //check 'done'
     //total_time - current_time
 }
 
 function renewVideoStatus($id)
 {
+    global $wpdb;
+    $current_user = wp_get_current_user();
+    $uid = $current_user->ID;
     //renew status of video (current time, done) by id with ajax
 }
