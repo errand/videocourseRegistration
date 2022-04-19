@@ -92,8 +92,10 @@ function checkCurrentTime($id)
     $current_user = wp_get_current_user();
     $uid = $current_user->ID;
     //check 'done'
-    //total_time - current_time
+    //$result = total_time - current_time;
+    //$data = "'current' = {$result}";
     //add new current time
+    //$rows_affected = $wpdb->insert($table_name, $data);
     wp_send_json_success();
     wp_die();
 }
