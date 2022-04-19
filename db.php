@@ -34,4 +34,17 @@ function videocourse_install()
     }
 }
 
+function addAllVideos($id)
+{
+    //some code to add all videos from course to db with user id by course id
+}
 
+function addVideo($id)
+{
+    //some code to add video to db with user id by video id
+}
+
+function countTotalTime($id)
+{
+    //some code to count total time of videos from course by course id
+}
