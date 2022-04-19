@@ -35,7 +35,7 @@ function videocourse_install()
     }
 }
 
-function addAllVideos($id)
+function addAllVideos($course_id)
 {
     //some code to add all videos from course to db with user id by course id
     global $wpdb;
@@ -43,7 +43,7 @@ function addAllVideos($id)
     $current_user = wp_get_current_user();
     $uid = $current_user->ID;
     //check if recordings exist
-    $result = $wpdb->get_results("SELECT * FROM $table_name WHERE `user_id` = $uid AND 'term_id' = $id");
+    $result = $wpdb->get_results("SELECT * FROM $table_name WHERE `user_id` = $uid AND 'term_id' = $course_id");
     //if not - add an entry of all videos
     if (!$result) {
         //get posts by term_id
@@ -57,7 +57,7 @@ function addAllVideos($id)
     wp_die();
 }
 
-function addVideo($id)
+function addVideo($video_id)
 {
     //some code to add video to db with user id by video id
     global $wpdb;
@@ -65,7 +65,7 @@ function addVideo($id)
     $current_user = wp_get_current_user();
     $uid = $current_user->ID;
     //check if recordings exist
-    $result = $wpdb->get_results("SELECT * FROM $table_name WHERE `user_id` = $uid AND 'post_id' = $id");
+    $result = $wpdb->get_results("SELECT * FROM $table_name WHERE `user_id` = $uid AND 'post_id' = $video_id");
     //if not - add an entry of this
     if (!$result) {
       //add video for this uid
@@ -76,12 +76,12 @@ function addVideo($id)
     wp_die();
 }
 
-function countTotalTime($id)
+function countTotalTime($id) //maybe try to combine counting all videos for course and individual timing
 {
-    //some code to count total time of videos from course by course id
+    //some code to count total time of videos from course by course id or individual video bi post id
     global $wpdb;
-    $table_name = $wpdb->prefix . "videocourse";
-    //cycle of videos by course id to count total time
+    //$table_name = $wpdb->prefix . "videocourse"; we can try to calculate the video at the stage when the user visits the course page
+    //cycle of videos by course id to count total time or individual video timing
     //ajax
 }
 
