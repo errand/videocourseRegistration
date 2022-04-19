@@ -20,7 +20,9 @@ function videocourse_install()
 	  current int(11) NOT NULL,
 	  total int(11) NOT NULL,
 	  done bool,
- 	  UNIQUE KEY id (id)
+ 	  UNIQUE KEY id (id),
+ 	  KEY user_id (user_id),
+ 	  KEY term_id (term_id)
 	){$charset_collate};";
 
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
@@ -31,3 +33,5 @@ function videocourse_install()
         add_option("videocourse_db_version", $videocourse_db_version);
     }
 }
+
+
