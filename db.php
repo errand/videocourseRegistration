@@ -85,7 +85,7 @@ function countTotalTime($id) //maybe try to combine counting all videos for cour
     //ajax
 }
 
-function checkCurrentTime($id)
+function checkCurrentTime($post_id)
 {
     global $wpdb;
     $table_name = $wpdb->prefix . "videocourse";
