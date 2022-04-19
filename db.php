@@ -67,3 +67,8 @@ function checkCurrentTime($id)
     //check 'done'
     //total_time - current_time
 }
+
+function renewVideoStatus($id)
+{
+    //renew status of video (current time, done) by id with ajax
+}
