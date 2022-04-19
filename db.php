@@ -40,7 +40,7 @@ function addAllVideos($id)
     global $wpdb;
     $current_user = wp_get_current_user();
     $uid = $current_user->ID;
-    //check if exist
+    //check if recordings exist
     //if not - add an entry of all videos
     wp_send_json_success();
     wp_die();
@@ -52,7 +52,7 @@ function addVideo($id)
     global $wpdb;
     $current_user = wp_get_current_user();
     $uid = $current_user->ID;
-    //check if exist
+    //check if recordings exist
     //if not - add an entry of this
     wp_send_json_success();
     wp_die();
@@ -63,7 +63,7 @@ function countTotalTime($id)
     //some code to count total time of videos from course by course id
     global $wpdb;
     //cycle of videos by course id to count total time
-    //ajax my bee
+    //ajax
 }
 
 function checkCurrentTime($id)
