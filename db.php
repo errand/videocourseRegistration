@@ -95,4 +95,4 @@ add_action("wp_ajax_checkCurrentTime", "checkCurrentTime");
 add_action("wp_ajax_nopriv_checkCurrentTime", "checkCurrentTime");
 add_action("wp_ajax_renewVideoStatus", "renewVideoStatus");
 add_action("wp_ajax_nopriv_renewVideoStatus", "renewVideoStatuse");
-//maybe combine checkCurrentTime & renewVideoStatus...
+//maybe combine checkCurrentTime & renewVideoStatus... in javascript we must programming right request
