@@ -42,6 +42,8 @@ function addAllVideos($id)
     $uid = $current_user->ID;
     //check if exist
     //if not - add an entry of all videos
+    wp_send_json_success();
+    wp_die();
 }
 
 function addVideo($id)
@@ -52,6 +54,8 @@ function addVideo($id)
     $uid = $current_user->ID;
     //check if exist
     //if not - add an entry of this
+    wp_send_json_success();
+    wp_die();
 }
 
 function countTotalTime($id)
@@ -69,6 +73,8 @@ function checkCurrentTime($id)
     $uid = $current_user->ID;
     //check 'done'
     //total_time - current_time
+    wp_send_json_success();
+    wp_die();
 }
 
 function renewVideoStatus($id)
@@ -77,4 +83,6 @@ function renewVideoStatus($id)
     $current_user = wp_get_current_user();
     $uid = $current_user->ID;
     //renew status of video (current time, done) by id with ajax
+    wp_send_json_success();
+    wp_die();
 }
