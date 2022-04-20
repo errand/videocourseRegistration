@@ -118,7 +118,7 @@ function renewVideoStatus()
 
     //$id      = $_POST['id'];
     //$current = $_POST['current_time'];
-    //renew status of video (current time, done) by id with ajax
+    //renew status of video (current time, done) by id&uid with ajax
     //$data = [
     //'current' => $current
     //];
