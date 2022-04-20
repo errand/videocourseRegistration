@@ -1,5 +1,8 @@
 <?php
 
+use Timber\PostQuery;
+use Timber\Timber;
+
 global $videocourse_db_version;
 $videocourse_db_version = "1.0";
 
@@ -62,61 +65,77 @@ function addAllVideos($course_id)
     wp_die();
 }
 
-function addVideo($video_id)
+function addVideo($pid)
 {
     //some code to add video to db with user id by video id
     global $wpdb;
     $table_name = $wpdb->prefix . "videocourse";
     $current_user = wp_get_current_user();
     $uid = $current_user->ID;
-    //get the course id by video id
-    //$course_id = get_the_terms( $post->ID, 'videocourse' );
-    //check if there is a course in the user's list
-    //addAllVideos($course_id);
+
+    if ($_POST['id']) {
+        $post_id = $_POST['id'];
+    } else {
+        $post_id = $pid;
+    }
+    //get the course id by post id
+    $terms = get_the_terms($post_id, 'videocourse');
     //check if recordings exist
-    $result = $wpdb->get_results("SELECT * FROM $table_name WHERE `user_id` = $uid AND 'post_id' = $video_id");
-    //if not - add an entry of this
+    $result = $wpdb->get_results("SELECT * FROM $table_name WHERE `user_id` = $uid AND 'post_id' = $post_id");
     if (!$result) {
         //add video for this uid
-        //$data = [
-        //'user_id' => $uid,
-        //'term_id' => $course_id,
-        //'post_id' => $video_id,
-        //'current' => 0,
-        //];
-        //$rows_affected = $wpdb->insert($table_name, $data);
+        $data = [
+            'user_id' => $uid,
+            'term_id' => $terms[0]->term_id,
+            'post_id' => $post_id,
+            'current' => 0,
+        ];
+        $wpdb->insert($table_name, $data);
     }
     wp_send_json_success();
     wp_die();
 }
 
-function countTotalTime($id) //maybe try to combine counting all videos for course and individual timing
+function countTotalTime($pid) //maybe try to combine counting all videos for course and individual timing
 {
-    //some code to count total time of videos from course by course_id or individual video by post_id
-    global $wpdb;
-    //$table_name = $wpdb->prefix . "videocourse"; we can try to calculate the video at the stage when the user visits the course page
-    //cycle of videos by course_id to count total time or individual video timing
-    //ajax
+    if ($_POST['id']) {
+        $post_id = $_POST['id'];
+    } else {
+        $post_id = $pid;
+    }
+
+    $length = 0;
+    $terms = get_the_terms($post_id, 'videocourse');
+    $posts = Timber::get_posts(array(
+        'posts_per_page' => -1,
+        'post_type' => 'video',
+        'orderby' => 'publish_date',
+        'order' => 'ASC',
+        'tax_query' => array(
+            array(
+                'taxonomy' => 'videocourse',
+                'field' => 'term_id',
+                'terms' => $terms[0]->term_id,
+            )
+        )
+    ));
+    foreach ($posts as $post) {
+        $current_length = getVideoLength($post->ID);
+        $length = +$current_length;
+    }
+    wp_send_json($length);
+    wp_die();
 }
 
-function checkCurrentTime($id)
+function getVideoLength($post_id)
 {
-    global $wpdb;
-    $table_name = $wpdb->prefix . "videocourse";
-    $current_user = wp_get_current_user();
-    $uid = $current_user->ID;
-    //$post_id      = $_POST['id'];
-    //check 'done'
-    //$result = total_time - current_time;
-    //$data = [
-    //'user_id' => $uid,
-    //'post_id' => $post_id,
-    //'current' => $result
-    //];
-    //add new current time
-    //$rows_affected = $wpdb->insert($table_name, $data);
-    wp_send_json_success();
-    wp_die();
+    $type = get_post_mime_type($post_id);
+    if ($type === 'video/mp4') {
+        $file_path = wp_get_attachment_url($post_id);
+        $meta = wp_read_video_metadata($file_path);
+        $length = $meta->length;
+        return($length);
+    }
 }
 
 function renewVideoStatus()
@@ -126,16 +145,24 @@ function renewVideoStatus()
     $current_user = wp_get_current_user();
     $uid = $current_user->ID;
 
-    $post_id      = $_POST['id'];
+    $post_id = $_POST['id'];
     //get term id ($term_id)
     $current = $_POST['current_time'];
     //renew status of video (current time, done) by id&uid with ajax
-    $data = [
-    'user_id' => $uid,
-    'post_id' => $post_id,
-    'current' => $current,
-    ];
-    $wpdb->insert($table_name, $data);
+    $total = getVideoLength($post_id);
+    if ($current == $total) {
+        setVideoDone($post_id);
+    } else {
+        $data = [
+            'current' => $current,
+        ];
+        $where = [
+            'user_id' => $uid,
+            'post_id' => $post_id,
+        ];
+        $wpdb->update($table_name, $data, $where);
+    }
+
     wp_send_json_success();
     wp_die();
 }
@@ -190,8 +217,8 @@ add_action("wp_ajax_addAllVideos", "addAllVideos");
 add_action("wp_ajax_nopriv_addAllVideos", "addAllVideos");
 add_action("wp_ajax_addVideo", "addVideo");
 add_action("wp_ajax_nopriv_addVideo", "addVideo");
-add_action("wp_ajax_checkCurrentTime", "checkCurrentTime");
-add_action("wp_ajax_nopriv_checkCurrentTime", "checkCurrentTime");
+add_action("wp_ajax_countTotalTime", "countTotalTime");
+add_action("wp_ajax_nopriv_countTotalTime", "countTotalTime");
 add_action("wp_ajax_renewVideoStatus", "renewVideoStatus");
 add_action("wp_ajax_nopriv_renewVideoStatus", "renewVideoStatuse");
 add_action("wp_ajax_forAllVideos", "forAllVideos");
