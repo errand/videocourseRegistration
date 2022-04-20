@@ -147,6 +147,7 @@ function forAllVideos()
     $current_user = wp_get_current_user();
     $uid = $current_user->ID;
     //get overall progress
+    //$result = $wpdb->get_results("SELECT * FROM $table_name WHERE `user_id` = $uid AND ???");
 }
 
 add_action("wp_ajax_addAllVideos", "addAllVideos");
