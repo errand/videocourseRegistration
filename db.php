@@ -159,9 +159,8 @@ function getVideoDone($id)
     $current_user = wp_get_current_user();
     $uid = $current_user->ID;
     $result = $wpdb->get_results("SELECT `done` FROM $table_name WHERE `user_id` = $uid AND `post_id` = $id");
-    echo $result;
-    //wp_send_json($result);
-    //wp_die();
+    wp_send_json($result);
+    wp_die();
 }
 
 function setVideoDone($id)
