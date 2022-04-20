@@ -65,8 +65,9 @@ function addVideo($video_id)
     $current_user = wp_get_current_user();
     $uid = $current_user->ID;
     //get the course id by video id
+    //$course_id = get_the_terms( $post->ID, 'videocourse' );
     //check if there is a course in the user's list
-    //addAllVideos($course_id)
+    //addAllVideos($course_id);
     //check if recordings exist
     $result = $wpdb->get_results("SELECT * FROM $table_name WHERE `user_id` = $uid AND 'post_id' = $video_id");
     //if not - add an entry of this
