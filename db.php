@@ -39,7 +39,7 @@ function videocourse_install()
 
 function addVideo($pid)
 {
-    //some code to add video to db with user id by video id
+    //some code to add video to db with user id by post id
     global $wpdb;
     $table_name = $wpdb->prefix . "videocourse";
     $current_user = wp_get_current_user();
@@ -61,6 +61,7 @@ function addVideo($pid)
             'term_id' => $terms[0]->term_id,
             'post_id' => $post_id,
             'current' => 0,
+            'done'    => false
         ];
         $wpdb->insert($table_name, $data);
     }
@@ -92,7 +93,7 @@ function countTotalTime($pid) //maybe try to combine counting all videos for cou
         )
     ));
     foreach ($posts as $post) {
-        $fid = get_post_meta( $post->ID, 'mp4', true );
+        $fid = get_post_meta($post->ID, 'mp4', true);
         $current_length = getVideoLength($fid);
         $length = +$current_length;
     }
