@@ -87,10 +87,10 @@ function addVideo($video_id)
 
 function countTotalTime($id) //maybe try to combine counting all videos for course and individual timing
 {
-    //some code to count total time of videos from course by course id or individual video bi post id
+    //some code to count total time of videos from course by course_id or individual video by post_id
     global $wpdb;
     //$table_name = $wpdb->prefix . "videocourse"; we can try to calculate the video at the stage when the user visits the course page
-    //cycle of videos by course id to count total time or individual video timing
+    //cycle of videos by course_id to count total time or individual video timing
     //ajax
 }
 
