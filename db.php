@@ -126,16 +126,16 @@ function renewVideoStatus()
     $current_user = wp_get_current_user();
     $uid = $current_user->ID;
 
-    //$post_id      = $_POST['id'];
+    $post_id      = $_POST['id'];
     //get term id ($term_id)
-    //$current = $_POST['current_time'];
+    $current = $_POST['current_time'];
     //renew status of video (current time, done) by id&uid with ajax
-    //$data = [
-    //'user_id' => $uid,
-    //'post_id' => $post_id,
-    //'current' => $current,
-    //];
-    //$rows_affected = $wpdb->insert($table_name, $data);
+    $data = [
+    'user_id' => $uid,
+    'post_id' => $post_id,
+    'current' => $current,
+    ];
+    $wpdb->insert($table_name, $data);
     wp_send_json_success();
     wp_die();
 }
