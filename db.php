@@ -172,7 +172,7 @@ function setVideoDone($id)
     $uid = $current_user->ID;
     $data = [
         'user_id' => $uid,
-        'post_id' => $post_id,
+        'post_id' => $id,
         'done' => true,
     ];
     $wpdb->insert($table_name, $data);
