@@ -140,6 +140,15 @@ function renewVideoStatus()
     wp_die();
 }
 
+function forAllVideos()
+{
+    global $wpdb;
+    $table_name = $wpdb->prefix . "videocourse";
+    $current_user = wp_get_current_user();
+    $uid = $current_user->ID;
+    //get overall progress
+}
+
 add_action("wp_ajax_addAllVideos", "addAllVideos");
 add_action("wp_ajax_nopriv_addAllVideos", "addAllVideos");
 add_action("wp_ajax_addVideo", "addVideo");
@@ -148,6 +157,8 @@ add_action("wp_ajax_checkCurrentTime", "checkCurrentTime");
 add_action("wp_ajax_nopriv_checkCurrentTime", "checkCurrentTime");
 add_action("wp_ajax_renewVideoStatus", "renewVideoStatus");
 add_action("wp_ajax_nopriv_renewVideoStatus", "renewVideoStatuse");
+add_action("wp_ajax_forAllVideos", "forAllVideos");
+add_action("wp_ajax_nopriv_forAllVideos", "forAllVideos");
 
 //maybe combine checkCurrentTime & renewVideoStatus... in javascript we must program right request
 //and we can try to shorten code with global variables
