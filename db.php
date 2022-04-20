@@ -77,7 +77,7 @@ function addVideo($video_id)
     $result = $wpdb->get_results("SELECT * FROM $table_name WHERE `user_id` = $uid AND 'post_id' = $video_id");
     //if not - add an entry of this
     if (!$result) {
-      //add video for this uid
+        //add video for this uid
         //$data = [
         //'user_id' => $uid,
         //'term_id' => $course_id,
