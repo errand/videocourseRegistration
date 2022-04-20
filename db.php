@@ -69,16 +69,9 @@ function addVideo($pid)
     wp_die();
 }
 
-function countTotalTime($pid) //maybe try to combine counting all videos for course and individual timing
+function countTotalTime($term_id) //maybe try to combine counting all videos for course and individual timing
 {
-    if ($_POST['id']) {
-        $post_id = $_POST['id'];
-    } else {
-        $post_id = $pid;
-    }
-
     $length = 0;
-    $terms = get_the_terms($post_id, 'videocourse');
     $posts = Timber::get_posts(array(
         'posts_per_page' => -1,
         'post_type' => 'video',
@@ -88,7 +81,7 @@ function countTotalTime($pid) //maybe try to combine counting all videos for cou
             array(
                 'taxonomy' => 'videocourse',
                 'field' => 'term_id',
-                'terms' => $terms[0]->term_id,
+                'terms' => $term_id,
             )
         )
     ));
