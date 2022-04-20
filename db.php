@@ -38,33 +38,6 @@ function videocourse_install()
     }
 }
 
-function addAllVideos($course_id)
-{
-    //some code to add all videos from course to db with user id by course id
-    global $wpdb;
-    $table_name = $wpdb->prefix . "videocourse";
-    $current_user = wp_get_current_user();
-    $uid = $current_user->ID;
-    //check if recordings exist
-    $result = $wpdb->get_results("SELECT * FROM $table_name WHERE `user_id` = $uid AND 'term_id' = $course_id");
-    //if not - add an entry of all videos
-    if (!$result) {
-        //get posts by term_id
-        //foreach ($data as $key => $value) {
-        //add videos into table for this uid
-        //$data = array_push($data, [
-        //'user_id' => $uid,
-        //'term_id' => $course_id,
-        //'post_id' => $value,
-        //'current' => 0
-        //]);
-        //$rows_affected = $wpdb->insert($table_name, $data);
-        //}
-    }
-    wp_send_json_success();
-    wp_die();
-}
-
 function addVideo($pid)
 {
     //some code to add video to db with user id by video id
@@ -213,8 +186,6 @@ function setVideoDone($pid)
     wp_die();
 }
 
-add_action("wp_ajax_addAllVideos", "addAllVideos");
-add_action("wp_ajax_nopriv_addAllVideos", "addAllVideos");
 add_action("wp_ajax_addVideo", "addVideo");
 add_action("wp_ajax_nopriv_addVideo", "addVideo");
 add_action("wp_ajax_countTotalTime", "countTotalTime");
