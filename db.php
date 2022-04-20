@@ -148,6 +148,7 @@ function forAllVideos()
     $uid = $current_user->ID;
     //get overall progress
     //$result = $wpdb->get_results("SELECT * FROM $table_name WHERE `user_id` = $uid AND ???");
+    //here we can think about pdf
 }
 
 add_action("wp_ajax_addAllVideos", "addAllVideos");
