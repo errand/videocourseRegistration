@@ -73,7 +73,12 @@ function addVideo($video_id)
     //if not - add an entry of this
     if (!$result) {
       //add video for this uid
-        //$data = [];
+        //$data = [
+        //'user_id' => $uid,
+        //'term_id' => $course_id,
+        //'post_id' => $video_id,
+        //'current' => 0,
+        //];
         //$rows_affected = $wpdb->insert($table_name, $data);
     }
     wp_send_json_success();
