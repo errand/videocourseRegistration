@@ -151,28 +151,30 @@ function forAllVideos()
     //here we can think about pdf
 }
 
-function getVideoDone($id)
+function getVideoDone()
 {
     //get done for video by id
     global $wpdb;
     $table_name = $wpdb->prefix . "videocourse";
     $current_user = wp_get_current_user();
+    $post_id = $_POST['id'];
     $uid = $current_user->ID;
-    $result = $wpdb->get_results("SELECT `done` FROM $table_name WHERE `user_id` = $uid AND `post_id` = $id");
+    $result = $wpdb->get_results("SELECT `done` FROM $table_name WHERE `user_id` = $uid AND `post_id` = $post_id");
     wp_send_json($result);
     wp_die();
 }
 
-function setVideoDone($id)
+function setVideoDone()
 {
     //set done for video by id
     global $wpdb;
     $table_name = $wpdb->prefix . "videocourse";
     $current_user = wp_get_current_user();
     $uid = $current_user->ID;
+    $post_id = $_POST['id'];
     $data = [
         'user_id' => $uid,
-        'post_id' => $id,
+        'post_id' => $post_id,
         'done' => true,
     ];
     $wpdb->insert($table_name, $data);
