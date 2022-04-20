@@ -49,7 +49,12 @@ function addAllVideos($course_id)
         //get posts by term_id
         //foreach ($data as $key => $value) {
         //add videos into table for this uid
-        //$data = [];
+        //$data = array_push($data, [
+        //'user_id' => $uid,
+        //'term_id' => $course_id,
+        //'post_id' => $value,
+        //'current' => 0
+        //]);
         //$rows_affected = $wpdb->insert($table_name, $data);
         //}
     }
@@ -100,9 +105,14 @@ function checkCurrentTime($id)
     $table_name = $wpdb->prefix . "videocourse";
     $current_user = wp_get_current_user();
     $uid = $current_user->ID;
+    //$post_id      = $_POST['id'];
     //check 'done'
     //$result = total_time - current_time;
-    //$data = "'current' = {$result}";
+    //$data = [
+    //'user_id' => $uid,
+    //'post_id' => $post_id,
+    //'current' => $result
+    //];
     //add new current time
     //$rows_affected = $wpdb->insert($table_name, $data);
     wp_send_json_success();
@@ -116,11 +126,14 @@ function renewVideoStatus()
     $current_user = wp_get_current_user();
     $uid = $current_user->ID;
 
-    //$id      = $_POST['id'];
+    //$post_id      = $_POST['id'];
+    //get term id ($term_id)
     //$current = $_POST['current_time'];
     //renew status of video (current time, done) by id&uid with ajax
     //$data = [
-    //'current' => $current
+    //'user_id' => $uid,
+    //'post_id' => $post_id,
+    //'current' => $current,
     //];
     //$rows_affected = $wpdb->insert($table_name, $data);
     wp_send_json_success();
