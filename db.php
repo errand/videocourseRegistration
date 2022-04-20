@@ -151,6 +151,36 @@ function forAllVideos()
     //here we can think about pdf
 }
 
+function getVideoDone($id)
+{
+    //get done for video by id
+    global $wpdb;
+    $table_name = $wpdb->prefix . "videocourse";
+    $current_user = wp_get_current_user();
+    $uid = $current_user->ID;
+    $result = $wpdb->get_results("SELECT `done` FROM $table_name WHERE `user_id` = $uid AND `post_id` = $id");
+    echo $result;
+    //wp_send_json($result);
+    //wp_die();
+}
+
+function setVideoDone($id)
+{
+    //set done for video by id
+    global $wpdb;
+    $table_name = $wpdb->prefix . "videocourse";
+    $current_user = wp_get_current_user();
+    $uid = $current_user->ID;
+    $data = [
+        'user_id' => $uid,
+        'post_id' => $post_id,
+        'done' => true,
+    ];
+    $wpdb->insert($table_name, $data);
+    wp_send_json_success();
+    wp_die();
+}
+
 add_action("wp_ajax_addAllVideos", "addAllVideos");
 add_action("wp_ajax_nopriv_addAllVideos", "addAllVideos");
 add_action("wp_ajax_addVideo", "addVideo");
@@ -161,6 +191,10 @@ add_action("wp_ajax_renewVideoStatus", "renewVideoStatus");
 add_action("wp_ajax_nopriv_renewVideoStatus", "renewVideoStatuse");
 add_action("wp_ajax_forAllVideos", "forAllVideos");
 add_action("wp_ajax_nopriv_forAllVideos", "forAllVideos");
+add_action("wp_ajax_getVideoDone", "getVideoDone");
+add_action("wp_ajax_nopriv_getVideoDone", "getVideoDone");
+add_action("wp_ajax_setVideoDone", "setVideoDone");
+add_action("wp_ajax_nopriv_setVideoDone", "setVideoDone");
 
 //maybe combine checkCurrentTime & renewVideoStatus... in javascript we must program right request
 //and we can try to shorten code with global variables
