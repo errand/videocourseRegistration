@@ -196,12 +196,7 @@ function setVideoDone($pid)
     $current_user = wp_get_current_user();
     $uid = $current_user->ID;
 
-    $data = [
-        'user_id' => $uid,
-        'post_id' => $post_id,
-        'done' => true,
-    ];
-    $wpdb->insert($table_name, $data);
+    $wpdb->update($table_name, array('done' => 1), array('user_id' => $uid,'post_id' => $post_id));
     wp_send_json_success();
     wp_die();
 }
