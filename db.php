@@ -53,7 +53,7 @@ function addVideo($pid)
     //get the course id by post id
     $terms = get_the_terms($post_id, 'videocourse');
     //check if recordings exist
-    $result = $wpdb->get_results("SELECT * FROM $table_name WHERE `user_id` = $uid AND 'post_id' = $post_id");
+    $result = $wpdb->get_results("SELECT `id` FROM $table_name WHERE `user_id` = $uid AND `post_id` = $post_id");
     if (!$result) {
         //add video for this uid
         $data = [
