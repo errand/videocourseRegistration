@@ -176,7 +176,11 @@ function getVideoDone($post_id)
     //$post_id = $_POST['id'];
     $uid = $current_user->ID;
     $result = $wpdb->get_results("SELECT `done` FROM $table_name WHERE `user_id` = $uid AND `post_id` = $post_id");
-    return $result ? true : false;
+    if($result && $result[0]->done == 1) {
+      return true;
+    } else {
+      return false;
+    }
 }
 
 function setVideoDone($pid)
