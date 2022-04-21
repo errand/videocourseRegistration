@@ -87,19 +87,21 @@ function countTotalTime($term_id) //maybe try to combine counting all videos for
     ));
     foreach ($posts as $post) {
         $fid = get_post_meta($post->ID, 'mp4', true);
-        $current_length = getVideoLength($fid);
-        $length = +$current_length;
+        $length += getVideoLength($fid);
     }
-    wp_send_json($length);
-    wp_die();
+    return $length;
 }
 
 function getVideoLength($fid)
 {
-    $file_path = get_attached_file($fid);
-    $meta = wp_read_video_metadata($file_path);
-    $length = $meta['length'];
-    return($length);
+  $meta = '';
+  require_once( ABSPATH . 'wp-admin/includes/media.php' );
+
+  if( function_exists( 'wp_read_video_metadata' ) ) {
+    $file_path = get_attached_file( $fid ); // example attachment ID
+    $meta = wp_read_video_metadata( $file_path );
+  }
+  return $meta['length'];
 }
 
 function renewVideoStatus()
