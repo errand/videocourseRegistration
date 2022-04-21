@@ -144,6 +144,29 @@ function forAllVideos()
     //here we can think about pdf
 }
 
+function getDoneVideoPerTerm($tid) {
+  $count = 0;
+  $posts = Timber::get_posts(array(
+    'posts_per_page' => -1,
+    'post_type' => 'video',
+    'orderby' => 'publish_date',
+    'order' => 'ASC',
+    'tax_query' => array(
+      array(
+        'taxonomy' => 'videocourse',
+        'field' => 'term_id',
+        'terms' => $tid,
+      )
+    )
+  ));
+  foreach ($posts as $post) {
+    if(getVideoDone($post->id)) {
+      $count += 1;
+    }
+  }
+  return $count;
+}
+
 function getVideoDone($post_id)
 {
     //get done for video by id
