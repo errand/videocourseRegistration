@@ -293,7 +293,7 @@ Ein Passwort sollte mindestens 10 Zeichen lang sein. Es muss aus Groß- und Klei
             .then(data => {
                 if (data.loggedin) {
                     _paq.push(['trackEvent', 'VideoCourse', 'Login', 'User', login])
-                    target.classList.remove('processing')
+                    e.target.classList.remove('processing')
                     window.location.reload()
                 } else {
                     form.querySelector('.log').style.display = 'block'
