@@ -99,9 +99,6 @@ class UserRegister {
               </select>
           </div>
         </div>
-        <div class="form-group">
-          <div class="form-control"><input class="form-input" type="text" name="userLogin" data-id="userLogin" placeholder="Login" required></div>
-        </div>
         <div class="form-row">
           <div class="form-group" style="flex: 2">
               <div class="form-control"><input class="form-input" type="password" name="userPassword" data-id="userPassword" placeholder="Passwort" required></div>
@@ -129,9 +126,13 @@ Ein Passwort sollte mindestens 10 Zeichen lang sein. Es muss aus Groß- und Klei
 </div>
 </div>
 </div>
+
+<div id="gdrp-text"></div>
     </div>
     `
         document.body.appendChild(this.modal)
+        console.log(document.getElementById('videoCourseMeta'))
+        document.getElementById('gdrp-text').innerText = document.getElementById('videoCourseMeta').dataset.gdrp
         document.getElementById('modalClose').addEventListener('click', () => this.modal.remove())
         document.getElementById('registerSubmit').addEventListener('click', ev => this.registerUser(ev.target))
         document.getElementById('loginSubmit').addEventListener('click', e => this.login(e))

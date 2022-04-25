@@ -31,7 +31,7 @@ function registerUser()
     $data = json_decode($data, true);
 
     $userMetaData = [
-        'user_login'            => $data['userLogin'],
+        'user_login'            => $data['userEmail'],
         'user_email'            => $data['userEmail'],
         'user_pass'             => $data['userPassword'],
         'first_name'            => $data['userFirstName'],
@@ -74,7 +74,6 @@ add_action("wp_ajax_nopriv_loginUser", "loginUser");
 
 function loginUser()
 {
-
     $data = array();
     $data['user_login'] = $_POST['login'];
     $data['user_password'] = $_POST['password'];
