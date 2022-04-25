@@ -69,7 +69,7 @@ function addVideo($pid)
   wp_die();
 }
 
-function countTotalTime($term_id) //maybe try to combine counting all videos for course and individual timing
+function countTotalTimeInTerm($term_id) //maybe try to combine counting all videos for course and individual timing
 {
   $length = 0;
   $posts = Timber::get_posts(array(
@@ -88,6 +88,46 @@ function countTotalTime($term_id) //maybe try to combine counting all videos for
     $length += getVideoLength($fid);
   }
   return $length;
+}
+
+function countTotalTime() //maybe try to combine counting all videos for course and individual timing
+{
+  $length = 0;
+  $posts = Timber::get_posts(array(
+    'posts_per_page' => -1,
+    'post_type' => 'video',
+  ));
+  foreach ($posts as $post) {
+    $fid = get_post_meta($post->ID, 'mp4', true);
+    $length += getVideoLength($fid);
+  }
+  return $length;
+}
+
+function countCurrentTimeInTerm($tid) {
+	global $wpdb;
+	$count = 0;
+	$table_name = $wpdb->prefix . "videocourse";
+	$current_user = wp_get_current_user();
+	$uid = $current_user->ID;
+	$result = $wpdb->get_results("SELECT `current` FROM $table_name WHERE `user_id` = $uid AND `term_id` = $tid");
+	foreach ($result as $row) {
+		$count += $row->current;
+	}
+	return $count;
+}
+
+function countAllCurrentTime() {
+	global $wpdb;
+	$count = 0;
+	$table_name = $wpdb->prefix . "videocourse";
+	$current_user = wp_get_current_user();
+	$uid = $current_user->ID;
+	$result = $wpdb->get_results("SELECT `current` FROM $table_name WHERE `user_id` = $uid");
+	foreach ($result as $row) {
+		$count += $row->current;
+	}
+	return $count;
 }
 
 function getVideoLength($fid)
@@ -226,8 +266,8 @@ function setVideoDone($pid)
 
 add_action("wp_ajax_addVideo", "addVideo");
 add_action("wp_ajax_nopriv_addVideo", "addVideo");
-add_action("wp_ajax_countTotalTime", "countTotalTime");
-add_action("wp_ajax_nopriv_countTotalTime", "countTotalTime");
+add_action("wp_ajax_countTotalTimeInTerm", "countTotalTimeInTerm");
+add_action("wp_ajax_nopriv_countTotalTimeInTerm", "countTotalTimeInTerm");
 add_action("wp_ajax_renewVideoStatus", "renewVideoStatus");
 add_action("wp_ajax_nopriv_renewVideoStatus", "renewVideoStatuse");
 add_action("wp_ajax_getVideoDone", "getVideoDone");

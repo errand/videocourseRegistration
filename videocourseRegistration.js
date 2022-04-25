@@ -197,6 +197,9 @@ Ein Passwort sollte mindestens 10 Zeichen lang sein. Es muss aus Groß- und Klei
             const form = target.closest('#videoRegistrationForm')
             const inputs = form.querySelectorAll('input')
             const userEmail = form.querySelector('[data-id="userEmail"]').value
+
+            target.classList.add('processing')
+
             Array.from(inputs).forEach(input => {
                 if (input.type != 'radio' || input.type === 'radio' && input.checked) {
                     Object.assign(dataObjects,{
@@ -232,6 +235,7 @@ Ein Passwort sollte mindestens 10 Zeichen lang sein. Es muss aus Groß- und Klei
                 .then(response => response.json())
                 .then(data => {
                     if (data) {
+                        target.classList.remove('processing')
                         this.modal.remove()
                         this.container.classList.remove('blocked')
                         _paq.push(['trackEvent', 'VideoCourse', 'Registration', 'User', userEmail])
@@ -273,6 +277,8 @@ Ein Passwort sollte mindestens 10 Zeichen lang sein. Es muss aus Groß- und Klei
         const login = form.querySelector('[data-id="userLogin"]').value
         const password = form.querySelector('[data-id="userPassword"]').value
 
+        e.target.classList.add('processing')
+
         const data = new FormData();
         data.append( 'action', 'loginUser' );
         data.append( 'login', login );
@@ -287,6 +293,7 @@ Ein Passwort sollte mindestens 10 Zeichen lang sein. Es muss aus Groß- und Klei
             .then(data => {
                 if (data.loggedin) {
                     _paq.push(['trackEvent', 'VideoCourse', 'Login', 'User', login])
+                    target.classList.remove('processing')
                     window.location.reload()
                 } else {
                     form.querySelector('.log').style.display = 'block'
