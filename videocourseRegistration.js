@@ -36,118 +36,40 @@ class UserRegister {
     }
 
     showRegistrationModal () {
-        this.modal = document.createElement('div')
-        this.modal.classList.add('modal')
-        this.modal.innerHTML = `
-    <div class="modal-inner">
-        <div id="modalClose">
-       <svg xmlns="http://www.w3.org/2000/svg" width="23.409" height="23.409" viewBox="0 0 23.409 23.409">
-          <g id="Сгруппировать_370"  transform="translate(-1531.379 -190.379)">
-            <line x2="19.166" y2="19.166" transform="translate(1533.5 192.5)" fill="none" stroke="#a3a7a9" stroke-linecap="round" stroke-width="3"/>
-            <line " x2="19.166" y2="19.166" transform="translate(1552.666 192.5) rotate(90)" fill="none" stroke="#a3a7a9" stroke-linecap="round" stroke-width="3"/>
-          </g>
-        </svg>
-      </div>
-        <div class="modal-tabs">
-        <div class="modal-tabs-header">
-          <span data-action="login" class="active">Anmelden</span>
-          <span data-action="register">Registrien</span>
-        </div>
-      <div class="modal-tabs-content">
-      <div data-tab="login">
-        <form id="videoLoginForm" class="form">
-        <div class="form-group">
-          <div class="form-control"><input class="form-input" type="text" name="userLogin" data-id="userLogin" placeholder="Login" required></div>
-        </div>
-        <div class="form-group">
-          <div class="form-control"><input class="form-input" type="password" name="userPassword" data-id="userPassword" placeholder="Passwort" required></div>
-        </div>
-        <button type="button" id="loginSubmit">Anmelden</button>
-      <div class="log" style="display: none">Markierte Felder müssen ausgefüllt werden</div>
-      </form>
-      
-      </div>
-      <div data-tab="register" style="display: none">
-      <form id="videoRegistrationForm" class="form">
-          <div class="form-control">
-              <select class="form-input" name="userAnrede" id="userAnrede" data-id="userAnrede" title="Anrede" required>
-                    <option value="" selected disabled>Anrede</option>
-                    <option value="female" name="Frau">Frau</option>
-                    <option value="male" name="Herr">Herr</option>
-                    <option value="other" name="Divers">Divers</option>
-              </select>
-          </div>  
-        <div class="form-row">
-            <div class="form-group">
-              <div class="form-control"><input class="form-input" type="text" name="userLastName" data-id="userLastName" placeholder="Vorname" required></div>
-            </div>
-            <div class="form-group">
-              <div class="form-control"><input class="form-input" type="text" name="userFirstName" data-id="userFirstName" placeholder="Nachname" required></div>
-            </div>
-        </div>
-        <div class="form-group">
-          <div class="form-control"><input class="form-input" type="email" name="userEmail" data-id="userEmail" placeholder="E-Mail" required></div>
-        </div>
-        <div class="form-group">
-          <div class="form-control">
-              <select class="form-input" name="userStadtKommune" id="userStadtKommune" data-id="userStadtKommune" title="Stadt / Kommune" required>
-                <option value="" selected disabled>Bitte auswählen</option>
-                <option value="stadtKommune" name="stadtKommune">Stadt / Kommune</option>
-                <option value="Unternehmen" name="Unternehmen">Unternehmen</option>
-                <option value="Privatperson" name="Privatperson">Privatperson</option>
-                <option value="Sonstige" name="Sonstige">Sonstige</option>                    
-              </select>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group" style="flex: 2">
-              <div class="form-control"><input class="form-input" type="password" name="userPassword" data-id="userPassword" placeholder="Passwort" required></div>
-              <div class="form-control"><input class="form-input" type="password" name="userPasswordConfirm" data-id="userPasswordConfirm" placeholder="Passwort erneut eingeben" required></div>
-            </div>
-            
-        <div class="form-group info">
-          <svg xmlns="http://www.w3.org/2000/svg" width="46" height="40" viewBox="0 0 46 40" class="svg-trigger">
-          <g transform="translate(3)" fill="#fff" stroke="#a3a7a9" stroke-width="1">
-            <circle cx="20" cy="20" r="20" stroke="none"/>
-            <circle cx="20" cy="20" r="19.5" fill="none"/>
-          </g>
-          <text id="i" transform="translate(0 6)" fill="#a3a7a9" font-size="24" font-family="SegoeUI-Light, Segoe UI" font-weight="300"><tspan x="20.539" y="26">i</tspan></text>
-        </svg>
-          <div class="text">Passwortvorgaben: 
-Ein Passwort sollte mindestens 10 Zeichen lang sein. Es muss aus Groß- und Kleinbuchstaben, Zahlen und Sonderzeichen.
-</div>
-        </div>
-        </div>
-        <button type="button" id="registerSubmit">Registrieren</button>    
-        
-        <div class="log" style="display: none">Markierte Felder müssen ausgefüllt werden</div>   
-      </form>
-      
-</div>
-</div>
-</div>
+        const modal = document.querySelector('.modal')
+        modal.classList.add('show')
 
-<div id="gdrp-text"></div>
-    </div>
-    `
-        document.body.appendChild(this.modal)
-        console.log(document.getElementById('videoCourseMeta'))
-        document.getElementById('gdrp-text').innerText = document.getElementById('videoCourseMeta').dataset.gdrp
-        document.getElementById('modalClose').addEventListener('click', () => this.modal.remove())
+        document.getElementById('modalClose').addEventListener('click', () => modal.classList.remove('show'))
         document.getElementById('registerSubmit').addEventListener('click', ev => this.registerUser(ev.target))
         document.getElementById('loginSubmit').addEventListener('click', e => this.login(e))
+        document.getElementById('loginRecover').addEventListener('click', e => this.recoverPassword(e.target))
+        document.querySelector('[data-action="recover"]').addEventListener('click', () => {
+            this.closeAllTabs()
+            document.querySelector('[data-tab="recover"]').style.display = 'block';
+        })
         document.querySelector('[data-action="login"]').addEventListener('click', () => {
-            document.querySelector('[data-tab="register"]').style.display = 'none';
+            this.closeAllTabs()
             document.querySelector('[data-tab="login"]').style.display = 'block';
             document.querySelector('[data-action="login"]').classList.add('active')
-            document.querySelector('[data-action="register"]').classList.remove('active')
         })
         document.querySelector('[data-action="register"]').addEventListener('click', () => {
-            document.querySelector('[data-tab="login"]').style.display = 'none';
+            this.closeAllTabs()
             document.querySelector('[data-tab="register"]').style.display = 'block';
             document.querySelector('[data-action="register"]').classList.add('active')
-            document.querySelector('[data-action="login"]').classList.remove('active')
         })
+    }
+
+    closeAllTabs() {
+        [...document.querySelectorAll('.tab')].forEach(
+          tab => {
+            tab.style.display = 'none'
+            tab.classList.remove('active')
+          });
+
+        [...document.querySelectorAll('.tab-link')].forEach(
+          link => {
+              link.classList.remove('active')
+          });
     }
 
     validateForm (target) {
@@ -171,6 +93,7 @@ Ein Passwort sollte mindestens 10 Zeichen lang sein. Es muss aus Groß- und Klei
             const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
             if (!re.test(emailField.value)) {
                 emailField.closest('.form-control').classList.add('invalid')
+                log.style.display = 'block'
                 wrong += 1
             }
         }
@@ -190,11 +113,52 @@ Ein Passwort sollte mindestens 10 Zeichen lang sein. Es muss aus Groß- und Klei
         return wrong === 0
     }
 
+    recoverPassword(target) {
+        if (this.validateForm(target)) {
+            const form = target.closest('#videoRecoverForm')
+            const userEmail = form.querySelector('[data-id="userEmail"]').value
+            const security = document.getElementById('forgotsecurity').value
+            const log = form.querySelector('.log')
+
+            target.classList.add('processing')
+
+            const data = new FormData();
+
+            data.append( 'action', 'recoverPassword' );
+            data.append( 'email', userEmail );
+            data.append( 'security', security );
+
+            fetch(videocourseRegistration.ajax_url, {
+                method: "POST",
+                credentials: 'same-origin',
+                body: data
+            })
+              .then(response => response.json())
+              .then(data => {
+                  if (data) {
+                      log.style.display = 'block'
+                      log.innerText = data.message
+                      target.classList.remove('processing')
+                  }
+              })
+              .catch((error) => {
+
+                  console.log(error)
+                  console.log('[Recover Password]');
+                  console.error(error);
+                  log.style.display = 'block'
+                  log.innerText = error
+                  target.classList.remove('processing')
+              });
+        }
+    }
+
     registerUser (target) {
         if (this.validateForm(target)) {
             let dataObjects = {};
             let userKommune;
             let userAnrede;
+            const modal = target.closest('.modal')
             const form = target.closest('#videoRegistrationForm')
             const inputs = form.querySelectorAll('input')
             const userEmail = form.querySelector('[data-id="userEmail"]').value
@@ -223,8 +187,6 @@ Ein Passwort sollte mindestens 10 Zeichen lang sein. Es muss aus Groß- und Klei
             //console.log(dataObjects);
             const data = new FormData();
 
-            console.log(dataObjects)
-
             data.append( 'action', 'registerUser' );
             data.append( 'inputs', dataObjects );
 
@@ -237,7 +199,6 @@ Ein Passwort sollte mindestens 10 Zeichen lang sein. Es muss aus Groß- und Klei
                 .then(data => {
                     if (data) {
                         target.classList.remove('processing')
-                        this.modal.remove()
                         this.container.classList.remove('blocked')
                         _paq.push(['trackEvent', 'VideoCourse', 'Registration', 'User', userEmail])
                         document.location.reload(true);

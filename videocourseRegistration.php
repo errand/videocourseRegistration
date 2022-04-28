@@ -88,3 +88,105 @@ function loginUser()
 
     die();
 }
+
+add_action("wp_ajax_recoverPassword", "recoverPassword");
+add_action("wp_ajax_nopriv_recoverPassword", "recoverPassword");
+
+function recoverPassword(){
+
+  // First check the nonce, if it fails the function will break
+  check_ajax_referer( 'ajax-forgot-nonce', 'security' );
+
+  global $wpdb;
+
+  $account = $_POST['email'];
+
+  if( empty( $account ) ) {
+    $error = 'Enter an username or e-mail address.';
+  } else {
+    if(is_email( $account )) {
+      if( email_exists($account) )
+        $get_by = 'email';
+      else
+        $error = 'Stellen Sie sicher, dass die E-Mail richtig geschrieben ist';
+    }
+    else if (validate_username( $account )) {
+      if( username_exists($account) )
+        $get_by = 'login';
+      else
+        $error = 'Stellen Sie sicher, dass die E-Mail richtig geschrieben ist';
+    }
+    else
+      $error = 'Ungültiger Benutzername oder E-Mail-Adresse.';
+  }
+
+  if(empty ($error)) {
+    // lets generate our new password
+    //$random_password = wp_generate_password( 12, false );
+    $random_password = wp_generate_password();
+
+    // Get user data by field and data, fields are id, slug, email and login
+    $user = get_user_by( $get_by, $account );
+
+    $update_user = wp_update_user( array ( 'ID' => $user->ID, 'user_pass' => $random_password ) );
+
+    // if  update user return true then lets send user an email containing the new password
+    if( $update_user ) {
+
+      $from = 'robot@stadtlabore-deutschland.de'; // Set whatever you want like mail@yourdomain.com
+
+      if(!(isset($from) && is_email($from))) {
+        $sitename = strtolower( $_SERVER['SERVER_NAME'] );
+        if ( substr( $sitename, 0, 4 ) == 'www.' ) {
+          $sitename = substr( $sitename, 4 );
+        }
+        $from = 'robot@'.$sitename;
+      }
+
+      $to = $user->user_email;
+      $subject = 'Dein neues Passwort';
+      $sender = 'From: '.get_option('name').' <'.$from.'>' . "\r\n";
+
+      $message = 'Dein neues Passwort ist: '.$random_password;
+
+      $headers[] = 'MIME-Version: 1.0' . "\r\n";
+      $headers[] = 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+      $headers[] = "X-Mailer: PHP \r\n";
+      $headers[] = $sender;
+
+      $mail = wp_mail( $to, $subject, $message, $headers );
+      if( $mail )
+        $success = 'Überprüfen Sie Ihre E-Mail-Adresse für Ihr neues Passwort.';
+      else
+        $error = 'Das System kann Ihnen keine E-Mail mit Ihrem neuen Passwort senden.';
+    } else {
+      $error = 'Beim Aktualisieren Ihres Kontos ist etwas schief gelaufen.';
+    }
+  }
+
+  if( ! empty( $error ) )
+    echo json_encode(array('loggedin'=>false, 'message'=>__($error)));
+
+  if( ! empty( $success ) )
+    echo json_encode(array('loggedin'=>false, 'message'=>__($success)));
+
+  die();
+}
+
+function my_login_logo() { ?>
+  <style type="text/css">
+    #login h1 a, .login h1 a {
+      background-image: url(<?php echo get_stylesheet_directory_uri(); ?>/Components/NavigationMain/Assets/logo.svg);
+      height:97px;
+      width:320px;
+      background-size: 320px 97px;
+      background-repeat: no-repeat;
+    }
+  </style>
+<?php }
+add_action( 'login_enqueue_scripts', 'my_login_logo' );
+
+function my_login_logo_url() {
+  return '/videocourses';
+}
+add_filter( 'login_headerurl', 'my_login_logo_url' );
