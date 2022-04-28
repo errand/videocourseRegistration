@@ -7,6 +7,7 @@ class UserRegister {
     init () {
         this.resolveElements()
         this.addEventListeners()
+        this.pwdGenerate()
     }
 
     resolveElements () {
@@ -232,6 +233,7 @@ class UserRegister {
     }
 
     login(e) {
+        console.log(e.target)
         if (!this.validateForm(e.target)) {
             return
         }
@@ -268,6 +270,19 @@ class UserRegister {
                 console.error(error);
             });
     }
+
+    pwdGenerate() {
+        const generatePassword = (
+          length = 20,
+          wishlist = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz~!@-#$'
+        ) =>
+          Array.from(crypto.getRandomValues(new Uint32Array(length)))
+            .map((x) => wishlist[x % wishlist.length])
+            .join('')
+
+        console.log(generatePassword())
+    }
+
 }
 
 const userCheck = new UserRegister(document.body)
