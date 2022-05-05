@@ -64,6 +64,15 @@ function addVideo($pid)
       'done'    => false
     ];
     $wpdb->insert($table_name, $data);
+  } else {
+    $data = [
+      'term_id' => $terms[0]->term_id,
+    ];
+    $where = [
+      'user_id' => $uid,
+      'post_id' => $post_id,
+    ];
+    $wpdb->update($table_name, $data, $where);
   }
   wp_send_json_success();
   wp_die();
