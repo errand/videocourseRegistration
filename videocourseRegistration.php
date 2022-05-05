@@ -193,7 +193,7 @@ add_filter( 'login_headerurl', 'my_login_logo_url' );
 
 add_action('after_setup_theme', 'remove_admin_bar');
 function remove_admin_bar() {
-  if (!current_user_can('administrator') || !current_user_can('editor')) {
+  if (!current_user_can('edit_posts')) {
     show_admin_bar(false);
   }
 }
