@@ -12,12 +12,14 @@ class UserRegister {
     resolveElements () {
         this.user = document.querySelector('html').classList.contains('logged-in')
         this.popupButton = document.getElementById('authButton')
+        this.alsoPopupButtons = document.querySelectorAll('.videocourse');
         this.logoutButton = document.getElementById('logoutButton')
     }
 
     addEventListeners () {
         if (!this.user) {
             this.popupButton.addEventListener('click', () => this.showRegistrationModal())
+            this.alsoPopupButtons.forEach(button => button.addEventListener('click', () => this.showRegistrationModal()))
         } else {
             if(this.logoutButton) {
                 this.logoutButton.addEventListener('click', () => this.logout())
