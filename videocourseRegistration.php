@@ -233,28 +233,30 @@ function your_custom_post_order_fn()
   add_post_type_support( 'video', 'page-attributes' );
 }
 
-/**
- * add order column to admin listing screen for header text
- */
-function add_new_header_text_column($header_text_columns) {
-  $header_text_columns['menu_order'] = "Order";
-  return $header_text_columns;
-}
-add_action('manage_header_text_posts_columns', 'add_new_header_text_column');
+$MY_POST_TYPE = "video"; // just for a showcase
 
-/**
- * show custom order column values
- */
-function show_order_column($name){
-  global $post;
+// the basic support (menu_order is included in the page-attributes)
+add_post_type_support($MY_POST_TYPE, 'page-attributes');
 
-  switch ($name) {
-    case 'menu_order':
-      $order = $post->menu_order;
-      echo $order;
-      break;
-    default:
-      break;
+// add a column to the post type's admin
+// basically registers the column and sets it's title
+add_filter('manage_' . $MY_POST_TYPE . '_posts_columns', function ($columns) {
+  $columns['menu_order'] = "Order"; //column key => title
+  return $columns;
+});
+
+// display the column value
+add_action( 'manage_' . $MY_POST_TYPE . '_posts_custom_column', function ($column_name, $post_id){
+  if ($column_name == 'menu_order') {
+    echo get_post($post_id)->menu_order;
   }
-}
-add_action('manage_header_text_posts_custom_column','show_order_column');
+}, 10, 2); // priority, number of args - MANDATORY HERE!
+
+// make it sortable
+$menu_order_sortable_on_screen = 'edit-' . $MY_POST_TYPE; // screen name of LIST page of posts
+add_filter('manage_' . $menu_order_sortable_on_screen . '_sortable_columns', function ($columns){
+  // column key => Query variable
+  // menu_order is in Query by default so we can just set it
+  $columns['menu_order'] = 'menu_order';
+  return $columns;
+});
