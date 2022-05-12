@@ -232,3 +232,29 @@ function your_custom_post_order_fn()
 {
   add_post_type_support( 'video', 'page-attributes' );
 }
+
+/**
+ * add order column to admin listing screen for header text
+ */
+function add_new_header_text_column($header_text_columns) {
+  $header_text_columns['menu_order'] = "Order";
+  return $header_text_columns;
+}
+add_action('manage_header_text_posts_columns', 'add_new_header_text_column');
+
+/**
+ * show custom order column values
+ */
+function show_order_column($name){
+  global $post;
+
+  switch ($name) {
+    case 'menu_order':
+      $order = $post->menu_order;
+      echo $order;
+      break;
+    default:
+      break;
+  }
+}
+add_action('manage_header_text_posts_custom_column','show_order_column');
