@@ -197,3 +197,38 @@ function remove_admin_bar() {
     show_admin_bar(false);
   }
 }
+
+function my_previous_post_where() {
+
+  global $post, $wpdb;
+
+  return $wpdb->prepare( "WHERE p.menu_order < %s AND p.post_type = %s AND p.post_status = 'publish'", $post->menu_order, $post->post_type);
+}
+add_filter( 'get_previous_post_where', 'my_previous_post_where' );
+
+function my_next_post_where() {
+
+  global $post, $wpdb;
+
+  return $wpdb->prepare( "WHERE p.menu_order > %s AND p.post_type = %s AND p.post_status = 'publish'", $post->menu_order, $post->post_type);
+}
+add_filter( 'get_next_post_where', 'my_next_post_where' );
+
+function my_previous_post_sort() {
+
+  return "ORDER BY p.menu_order desc LIMIT 1";
+}
+add_filter( 'get_previous_post_sort', 'my_previous_post_sort' );
+
+function my_next_post_sort() {
+
+  return "ORDER BY p.menu_order asc LIMIT 1";
+}
+add_filter( 'get_next_post_sort', 'my_next_post_sort' );
+
+add_action( 'admin_init', 'your_custom_post_order_fn' );
+
+function your_custom_post_order_fn()
+{
+  add_post_type_support( 'video', 'page-attributes' );
+}
