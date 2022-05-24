@@ -100,6 +100,18 @@ class UserRegister {
             }
         }
 
+        const passwordField = form.querySelector('[data-id="userPassword"]')
+
+        if(passwordField) {
+            const pwdRule = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{10,})/;
+            if (!pwdRule.test(passwordField.value)) {
+                passwordField.closest('.form-control').classList.add('invalid')
+                log.style.display = 'block'
+                log.innerText = document.querySelector('#passwordHelp .text').innerText;
+                wrong += 1
+            }
+        }
+
         if (form.querySelector('[data-id="userPasswordConfirm"]')) {
 
             const userPasswordConfirm = form.querySelector('[data-id="userPasswordConfirm"]');
