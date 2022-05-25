@@ -52,6 +52,7 @@ function registerUser()
 
 function auto_login_new_user($user_id)
 {
+    wp_send_new_user_notifications($user_id);
     wp_set_current_user($user_id);
     wp_set_auth_cookie($user_id);
     $user = get_user_by('id', $user_id);
@@ -89,11 +90,31 @@ function loginUser()
     die();
 }
 
+add_action("wp_ajax_deleteUser", "deleteUser");
+add_action("wp_ajax_nopriv_deleteUser", "deleteUser");
+
+function deleteUser()
+{
+    $data = array();
+    $data['user_login'] = $_POST['login'];
+    $data['user_password'] = $_POST['password'];
+
+    $user_signon = wp_signon($data, false);
+    if (is_wp_error($user_signon)) {
+        wp_send_json(json_encode(array('loggedin'=>false, 'message'=>__('Wrong username or password.'))));
+    } else {
+        $data['loggedin'] = true;
+        wp_send_json($data);
+    }
+
+    die();
+}
+
 add_action("wp_ajax_recoverPassword", "recoverPassword");
 add_action("wp_ajax_nopriv_recoverPassword", "recoverPassword");
 
-function recoverPassword(){
-
+function recoverPassword()
+{
   // First check the nonce, if it fails the function will break
   check_ajax_referer( 'ajax-forgot-nonce', 'security' );
 
@@ -133,7 +154,7 @@ function recoverPassword(){
     // if  update user return true then lets send user an email containing the new password
     if( $update_user ) {
 
-      $from = 'robot@stadtlabore-deutschland.de'; // Set whatever you want like mail@yourdomain.com
+      $from = 'info@stadtlabore-deutschland.de'; // Set whatever you want like mail@yourdomain.com
 
       if(!(isset($from) && is_email($from))) {
         $sitename = strtolower( $_SERVER['SERVER_NAME'] );
