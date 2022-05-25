@@ -300,7 +300,7 @@ function send_welcome_email_to_new_user($user_id) {
               <p>Let me know if you have further questions, I am here to help.</p>
               <p>Enjoy the rest of your day!</p>
               <p>Kind Regards,</p>
-              <p>poanchen</p>
+              <p>stadtlabore</p>
     ';
   $headers = array('Content-Type: text/html; charset=UTF-8');
   if (wp_mail($to, $subject, $body, $headers)) {
