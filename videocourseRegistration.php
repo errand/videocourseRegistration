@@ -280,33 +280,3 @@ add_filter('manage_' . $menu_order_sortable_on_screen . '_sortable_columns', fun
   $columns['menu_order'] = 'menu_order';
   return $columns;
 });
-
-
-// Sent user notification email
-
-function send_welcome_email_to_new_user($user_id) {
-  $user = get_userdata($user_id);
-  $user_email = $user->user_email;
-  // for simplicity, lets assume that user has typed their first and last name when they sign up
-  $user_full_name = $user->user_firstname . $user->user_lastname;
-
-  $subjectField = get_field('notification_subject', 'option');
-  $bodyField = get_field('notification_body', 'option');
-
-  // Now we are ready to build our welcome email
-  $to = $user_email;
-  $subject = "" . $subjectField . "";
-  $body = '
-              '.$bodyField.'
-    ';
-  $headers = array('Content-Type: text/html; charset=UTF-8');
-  if (wp_mail($to, $subject, $body, $headers)) {
-    error_log("email has been successfully sent to user whose email is " . $user_email);
-  }else{
-    error_log("email failed to sent to user whose email is " . $user_email);
-  }
-}
-
-// THE ONLY DIFFERENCE IS THIS LINE
-add_action('user_register', 'send_welcome_email_to_new_user');
-// THE ONLY DIFFERENCE IS THIS LINE
