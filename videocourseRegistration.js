@@ -10,10 +10,12 @@ class UserRegister {
     }
 
     resolveElements () {
-        this.user = document.querySelector('html').classList.contains('logged-in')
-        this.popupButton = document.getElementById('authButton')
+        this.user = document.querySelector('html').classList.contains('logged-in');
+        this.popupButton = document.getElementById('authButton');
         this.alsoPopupButtons = document.querySelectorAll('.videocourse');
-        this.logoutButton = document.getElementById('logoutButton')
+        this.logoutButton = document.getElementById('logoutButton');
+        this.deleteUserButton = document.getElementById('deleteAccount');
+        this.deleteUserButtonModal = document.getElementById('deleteAccountModal');
     }
 
     addEventListeners () {
@@ -24,6 +26,14 @@ class UserRegister {
             if(this.logoutButton) {
                 this.logoutButton.addEventListener('click', () => this.logout())
             }
+        }
+        if(this.deleteUserButton) {
+            this.deleteUserButtonConfirm = document.getElementById('userDeleteConfirm');
+            this.deleteUserButton.addEventListener('click', ()=> {
+                this.deleteUserButtonModal.style.display = 'block';
+                this.deleteUserButtonConfirm.addEventListener('click', () => this.deleteUser(this.deleteUserButton.dataset.user));
+                document.getElementById('userDeleteCancel').addEventListener('click', () => this.deleteUserButtonModal.style.display = 'none');
+            })
         }
     }
 
@@ -170,7 +180,6 @@ class UserRegister {
         if (this.validateForm(target)) {
             let dataObjects = {};
             let userKommune;
-            let userAnrede;
             const modal = target.closest('.modal')
             const form = target.closest('#videoRegistrationForm')
             const inputs = form.querySelectorAll('input')
@@ -189,11 +198,6 @@ class UserRegister {
             userKommune = document.getElementById('userStadtKommune');
             Object.assign(dataObjects,{
                 'userStadtKommune': userKommune.value
-            });
-
-            userAnrede = document.getElementById('userAnrede');
-            Object.assign(dataObjects,{
-                'userAnrede': userAnrede.value
             });
 
             dataObjects = JSON.stringify(dataObjects);
@@ -275,6 +279,34 @@ class UserRegister {
                     form.querySelector('.log').innerText = 'Falscher Benutzername oder falsches Passwort'
                 }
 
+            })
+            .catch((error) => {
+                console.log('[Video Registration Login]');
+                console.error(error);
+            });
+    }
+
+    deleteUser(id) {
+        const data = new FormData();
+        data.append( 'action', 'deleteUser' );
+        data.append( 'userId', id );
+
+        this.deleteUserButtonConfirm.style.color = '#fff'
+        this.deleteUserButtonConfirm.classList.add('processing')
+
+        fetch(videocourseRegistration.ajax_url, {
+            method: "POST",
+            credentials: 'same-origin',
+            body: data
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                this.deleteUserButtonConfirm.classList.remove('processing')
+                if (data.success) {
+                    _paq.push(['trackEvent', 'VideoCourse', 'Deleted', 'User', id])
+                    window.location.reload()
+                }
             })
             .catch((error) => {
                 console.log('[Video Registration Login]');

@@ -38,7 +38,6 @@ function registerUser()
         'last_name'             => $data['userLastName'],
         'show_admin_bar_front'  => false,
         'meta_input'            => [
-            'userAnrede'        => $data['userAnrede'],
             'userStadtKommune'  => $data['userStadtKommune'],
             'videoTracking'     => '',
         ],
@@ -94,19 +93,29 @@ add_action("wp_ajax_nopriv_deleteUser", "deleteUser");
 
 function deleteUser()
 {
-    $data = array();
-    $data['user_login'] = $_POST['login'];
-    $data['user_password'] = $_POST['password'];
+  require_once(ABSPATH.'wp-admin/includes/user.php' );
+  global $wpdb;
 
-    $user_signon = wp_signon($data, false);
-    if (is_wp_error($user_signon)) {
-        wp_send_json(json_encode(array('loggedin'=>false, 'message'=>__('Wrong username or password.'))));
+  $user_id = $_POST['userId'];
+
+  $roles = array();
+  $user = get_userdata($user_id);
+  $capabilities = $user->{$wpdb->prefix . 'capabilities'};
+  if (!isset($wp_roles))
+    $wp_roles = new WP_Roles();
+  foreach ($wp_roles->role_names as $role => $name) :
+    if (array_key_exists($role, $capabilities))
+      $roles[] = $role;
+  endforeach;
+  if (in_array("subscriber", $roles)) {
+    if (wp_delete_user($user_id)) {
+      wp_send_json_success();
     } else {
-        $data['loggedin'] = true;
-        wp_send_json($data);
+      wp_send_json(json_encode(array('loggedin'=>true, 'message'=>__('Some error'))));
     }
+  }
 
-    die();
+  die();
 }
 
 add_action("wp_ajax_recoverPassword", "recoverPassword");
@@ -116,8 +125,6 @@ function recoverPassword()
 {
   // First check the nonce, if it fails the function will break
   check_ajax_referer( 'ajax-forgot-nonce', 'security' );
-
-  global $wpdb;
 
   $account = $_POST['email'];
 
@@ -160,7 +167,7 @@ function recoverPassword()
         if ( substr( $sitename, 0, 4 ) == 'www.' ) {
           $sitename = substr( $sitename, 4 );
         }
-        $from = 'robot@'.$sitename;
+        $from = 'info@stadtlabore-deutschland.de';
       }
 
       $to = $user->user_email;
