@@ -19,7 +19,7 @@ class UserRegister {
     }
 
     addEventListeners () {
-        if (!this.user) {
+        if (!this.user && this.popupButton) {
             this.popupButton.addEventListener('click', () => this.showRegistrationModal())
             this.alsoPopupButtons.forEach(button => button.addEventListener('click', () => this.showRegistrationModal()))
         } else {
