@@ -161,18 +161,9 @@ function recoverPassword()
     if( $update_user ) {
 
       $from = 'info@stadtlabore-deutschland.de'; // Set whatever you want like mail@yourdomain.com
-
-      if(!(isset($from) && is_email($from))) {
-        $sitename = strtolower( $_SERVER['SERVER_NAME'] );
-        if ( substr( $sitename, 0, 4 ) == 'www.' ) {
-          $sitename = substr( $sitename, 4 );
-        }
-        $from = 'info@stadtlabore-deutschland.de';
-      }
-
       $to = $user->user_email;
       $subject = 'Dein neues Passwort';
-      $sender = 'From: '.get_option('name').' <'.$from.'>' . "\r\n";
+      $sender = 'From: Stadtlabore für Deutschland <'.$from.'>' . "\r\n";
 
       $message = 'Dein neues Passwort ist: '.$random_password;
 
