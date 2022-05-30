@@ -279,9 +279,7 @@ add_filter('manage_' . $menu_order_sortable_on_screen . '_sortable_columns', fun
   return $columns;
 });
 
-add_filter( 'retrieve_password_message', array( $this, 'replace_retrieve_password_message' ), 10, 4 );
-
-public function replace_retrieve_password_message( $message, $key, $user_login, $user_data ) {
+add_filter( 'retrieve_password_message', function ( $message, $key, $user_login, $user_data ) {
   // Create new message
   $msg  = __( 'Hello!', 'personalize-login' ) . "\r\n\r\n";
   $msg .= sprintf( __( 'You asked us to reset your password for your account using the email address %s.', 'personalize-login' ), $user_login ) . "\r\n\r\n";
@@ -291,4 +289,4 @@ public function replace_retrieve_password_message( $message, $key, $user_login, 
   $msg .= __( 'Thanks!', 'personalize-login' ) . "\r\n";
 
   return $msg;
-}
+} );
