@@ -279,14 +279,36 @@ add_filter('manage_' . $menu_order_sortable_on_screen . '_sortable_columns', fun
   return $columns;
 });
 
-add_filter( 'retrieve_password_message', function ( $message, $key, $user_login, $user_data ) {
-  // Create new message
-  $msg  = __( 'Hello!', 'personalize-login' ) . "\r\n\r\n";
-  $msg .= sprintf( __( 'You asked us to reset your password for your account using the email address %s.', 'personalize-login' ), $user_login ) . "\r\n\r\n";
-  $msg .= __( "If this was a mistake, or you didn't ask for a password reset, just ignore this email and nothing will happen.", 'personalize-login' ) . "\r\n\r\n";
-  $msg .= __( 'To reset your password, visit the following address:', 'personalize-login' ) . "\r\n\r\n";
-  $msg .= site_url( "wp-login.php?action=rp&key=$key&login=" . rawurlencode( $user_login ), 'login' ) . "\r\n\r\n";
-  $msg .= __( 'Thanks!', 'personalize-login' ) . "\r\n";
+//* Password reset activation E-mail -> Body
+add_filter( 'retrieve_password_message', 'dnlt_retrieve_password_message', 10, 2 );
 
-  return $msg;
-} );
+function dnlt_retrieve_password_message( $message, $key ){
+  $user_data = '';
+  // If no value is posted, return false
+  if( ! isset( $_POST['user_login'] )  ){
+    return '';
+  }
+  // Fetch user information from user_login
+  if ( strpos( $_POST['user_login'], '@' ) ) {
+
+    $user_data = get_user_by( 'email', trim( $_POST['user_login'] ) );
+  } else {
+    $login = trim($_POST['user_login']);
+    $user_data = get_user_by('login', $login);
+  }
+  if( ! $user_data  ){
+    return '';
+  }
+  $user_login = $user_data->user_login;
+  $user_email = $user_data->user_email;
+  // Setting up message for retrieve password
+  $message = "A password reset has been requested for this site:\n\n";
+  $message .= network_home_url( '/' ) . "\r\n\r\n";
+  $message .= sprintf(__('Username: %s'), $user_login) . "\r\n\r\n";
+  $message .= "Change this text to whatever you like.\n\n";
+  $message .= "If you did not request this, just ignore this email and nothing will happen.\n\n";
+  $message .= "To reset your password, visit the following address:\n";
+  $message .= network_site_url("wp-login.php?action=rp&key=$key&login=" . rawurlencode($user_login), 'login');
+
+  return $message;
+}
