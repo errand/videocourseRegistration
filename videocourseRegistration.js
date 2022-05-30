@@ -112,7 +112,7 @@ class UserRegister {
 
         const passwordField = form.querySelector('[data-id="userPassword"]')
 
-        if(passwordField) {
+        if(passwordField && form.id === 'videoRegistrationForm') {
             const pwdRule = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{10,})/;
             if (!pwdRule.test(passwordField.value)) {
                 passwordField.closest('.form-control').classList.add('invalid')
