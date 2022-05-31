@@ -163,7 +163,7 @@ function recoverPassword()
       $from = 'info@stadtlabore-deutschland.de'; // Set whatever you want like mail@yourdomain.com
       $to = $user->user_email;
       $subject = 'Dein neues Passwort';
-      $sender = 'From: Stadtlabore für  Deutschland <'.$from.'>' . "\r\n";
+      $sender = 'From: Stadtlabore für Deutschland <'.$from.'>' . "\r\n";
 
       $message = 'Dein neues Passwort ist: '.$random_password;
 
