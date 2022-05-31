@@ -159,18 +159,10 @@ function recoverPassword()
 
     // if  update user return true then lets send user an email containing the new password
     if( $update_user ) {
-
-      $from = 'info@stadtlabore-deutschland.de'; // Set whatever you want like mail@yourdomain.com
       $to = $user->user_email;
       $subject = 'Dein neues Passwort';
-      $sender = 'From: Stadtlabore für Deutschland <'.$from.'>' . "\r\n";
-
       $message = 'Dein neues Passwort ist: '.$random_password;
-
-      $headers[] = 'MIME-Version: 1.0' . "\r\n";
-      $headers[] = 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-      $headers[] = "X-Mailer: PHP \r\n";
-      $headers[] = $sender;
+      $headers = array('Content-Type: text/html; charset=UTF-8');
 
       $mail = wp_mail( $to, $subject, $message, $headers );
       if( $mail )
