@@ -180,8 +180,8 @@ class UserRegister {
         if (this.validateForm(target)) {
             let dataObjects = {};
             let userKommune;
-            const modal = target.closest('.modal')
-            const form = target.closest('#videoRegistrationForm')
+            const form = target.closest('.form')
+            const log = form.querySelector('.log')
             const inputs = form.querySelectorAll('input')
             const userEmail = form.querySelector('[data-id="userEmail"]').value
 
@@ -201,7 +201,6 @@ class UserRegister {
             });
 
             dataObjects = JSON.stringify(dataObjects);
-            //console.log(dataObjects);
             const data = new FormData();
 
             data.append( 'action', 'registerUser' );
@@ -216,9 +215,16 @@ class UserRegister {
                 .then(data => {
                     if (data) {
                         target.classList.remove('processing')
-                        this.container.classList.remove('blocked')
-                        _paq.push(['trackEvent', 'VideoCourse', 'Registration', 'User', userEmail])
-                        document.location.reload(true);
+                        log.style.display = 'block';
+                        if (data.success) {
+                            _paq.push(['trackEvent', 'VideoCourse', 'Registration', 'User', userEmail])
+                            log.innerText = 'Registrierung erfolgreich abgeschlossen. Bitte überprüfen Sie die angegebene E-Mail'
+                            log.classList.add('success')
+                        } else {
+                            //log.innerText = data.data
+                            log.innerText = 'Möglicherweise wird eine solche E-Mail bereits verwendet. Versuchen Sie, Ihr Passwort wiederherzustellen.'
+                        }
+                        //document.location.reload(true);
                     }
                 })
                 .catch((error) => {

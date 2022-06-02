@@ -44,19 +44,24 @@ function registerUser()
     ];
 
     $user_id = wp_insert_user($userMetaData);
-    auto_login_new_user($user_id);
-    wp_send_json_success();
+
+    if ( !is_wp_error($user_id)) {
+      wp_send_json_success();
+    } else {
+      wp_send_json_error($user_id->get_error_message());
+    }
+    //auto_login_new_user($user_id);
     wp_die();
 }
 
-function auto_login_new_user($user_id)
+/*function auto_login_new_user($user_id)
 {
     wp_set_current_user($user_id);
     wp_set_auth_cookie($user_id);
     $user = get_user_by('id', $user_id);
     do_action('wp_login', $user->user_login);
 }
-add_action('user_register', 'auto_login_new_user');
+add_action('user_register', 'auto_login_new_user');*/
 
 add_action("wp_ajax_logoutUser", "logoutUser");
 add_action("wp_ajax_nopriv_logoutUser", "logoutUser");
