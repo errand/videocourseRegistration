@@ -54,7 +54,7 @@ class UserRegister {
         document.getElementById('modalClose').addEventListener('click', () => modal.classList.remove('show'))
         document.getElementById('registerSubmit').addEventListener('click', ev => this.registerUser(ev.target))
         document.getElementById('loginSubmit').addEventListener('click', e => this.login(e))
-        //document.getElementById('loginRecover').addEventListener('click', e => this.recoverPassword(e.target))
+        document.getElementById('loginRecover').addEventListener('click', e => this.recoverPassword(e.target))
         document.querySelector('[data-action="recover"]').addEventListener('click', () => {
             this.closeAllTabs()
             document.querySelector('[data-tab="recover"]').style.display = 'block';
