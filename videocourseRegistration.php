@@ -212,3 +212,43 @@ function remove_admin_bar() {
     show_admin_bar(false);
   }
 }
+
+/*
+ * Add columns to video post list
+ */
+function add_acf_columns ( $columns ) {
+  $columns['order'] = __( 'Order' );
+   return $columns;
+}
+add_filter ( 'manage_video_posts_columns', 'add_acf_columns' );
+
+/*
+* Add columns to video post list
+*/
+function video_custom_column ( $column, $post_id ) {
+  switch ( $column ) {
+    case 'order':
+      echo get_post_meta ( $post_id, 'order', true );
+      break;
+  }
+}
+add_action ( 'manage_video_posts_custom_column', 'video_custom_column', 10, 2 );
+
+
+// Add info to the new columns
+add_action( 'manage_videocourse_custom_column', 'show_videocourse_order_in_columns', 10, 3 );
+
+function show_videocourse_order_in_columns( $string, $columns, $term_id ) {
+    switch ( $columns ) {
+        // in this example, we had saved some term meta as "genre-characterization"
+        case 'order' :
+            echo esc_html( get_term_meta( $term_id, 'order', true ) );
+        break;
+    }
+}
+add_filter( 'manage_edit-videocourse_columns', 'add_new_videocourse_columns' );
+
+function add_new_videocourse_columns( $columns ) {
+  $columns['order'] = __( 'order' );
+  return $columns;
+}
