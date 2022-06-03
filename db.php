@@ -273,6 +273,19 @@ function setVideoDone($pid)
   wp_die();
 }
 
+
+
+function video_trash_action( $post_id ) {
+  if ( 'video' != get_post_type( $post_id )) {
+    return;
+  }
+  global $wpdb;
+  $table = 'wp_videocourse';
+  $wpdb->delete( $table, array( 'post_id' => $post_id ) );
+}
+add_action( 'trashed_post', 'video_trash_action' );
+
+
 add_action("wp_ajax_addVideo", "addVideo");
 add_action("wp_ajax_nopriv_addVideo", "addVideo");
 add_action("wp_ajax_countTotalTimeInTerm", "countTotalTimeInTerm");
