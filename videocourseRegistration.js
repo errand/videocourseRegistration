@@ -54,7 +54,7 @@ class UserRegister {
         document.getElementById('modalClose').addEventListener('click', () => modal.classList.remove('show'))
         document.getElementById('registerSubmit').addEventListener('click', ev => this.registerUser(ev.target))
         document.getElementById('loginSubmit').addEventListener('click', e => this.login(e))
-        document.getElementById('loginRecover').addEventListener('click', e => this.recoverPassword(e.target))
+        //document.getElementById('loginRecover').addEventListener('click', e => this.recoverPassword(e.target))
         document.querySelector('[data-action="recover"]').addEventListener('click', () => {
             this.closeAllTabs()
             document.querySelector('[data-tab="recover"]').style.display = 'block';
@@ -152,13 +152,17 @@ class UserRegister {
             data.append( 'email', userEmail );
             data.append( 'security', security );
 
-            fetch(videocourseRegistration.ajax_url, {
+            fetch('/wp/wp-login.php?action=lostpassword', {
                 method: "POST",
                 credentials: 'same-origin',
                 body: data
             })
-              .then(response => response.json())
+              .then(response => {
+                  console.log(response)
+                  return response.json();
+              })
               .then(data => {
+                  console.log(data)
                   if (data) {
                       log.style.display = 'block'
                       log.innerText = data.message
