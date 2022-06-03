@@ -55,10 +55,10 @@ class UserRegister {
         document.getElementById('registerSubmit').addEventListener('click', ev => this.registerUser(ev.target))
         document.getElementById('loginSubmit').addEventListener('click', e => this.login(e))
         document.getElementById('loginRecover').addEventListener('click', e => this.recoverPassword(e.target))
-        document.querySelector('[data-action="recover"]').addEventListener('click', () => {
+        /*document.querySelector('[data-action="recover"]').addEventListener('click', () => {
             this.closeAllTabs()
             document.querySelector('[data-tab="recover"]').style.display = 'block';
-        })
+        })*/
         document.querySelector('[data-action="login"]').addEventListener('click', () => {
             this.closeAllTabs()
             document.querySelector('[data-tab="login"]').style.display = 'block';
