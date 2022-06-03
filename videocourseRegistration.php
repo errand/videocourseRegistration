@@ -122,7 +122,7 @@ function deleteUser()
 
   die();
 }
-/*
+
 add_action("wp_ajax_recoverPassword", "recoverPassword");
 add_action("wp_ajax_nopriv_recoverPassword", "recoverPassword");
 
@@ -186,7 +186,7 @@ function recoverPassword()
     echo json_encode(array('loggedin'=>false, 'message'=>__($success)));
 
   die();
-}*/
+}
 
 function my_login_logo() { ?>
   <style type="text/css">
