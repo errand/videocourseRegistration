@@ -252,3 +252,5 @@ function add_new_videocourse_columns( $columns ) {
   $columns['order'] = __( 'order' );
   return $columns;
 }
+
+add_filter( 'manage_edit-videocourse_sortable_columns', 'add_new_videocourse_columns' );
