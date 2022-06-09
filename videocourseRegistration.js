@@ -222,7 +222,7 @@ class UserRegister {
                         log.style.display = 'block';
                         if (data.success) {
                             _paq.push(['trackEvent', 'VideoCourse', 'Registration', 'User', userEmail])
-                            log.innerText = 'Registrierung erfolgreich abgeschlossen. Bitte überprüfen Sie die angegebene E-Mail'
+                            log.innerText = 'Registrierung erfolgreich abgeschlossen. Bitte überprüfe deinen Posteingang und eventuell auch deinen Spam-Ordner.'
                             log.classList.add('success')
                         } else {
                             //log.innerText = data.data
