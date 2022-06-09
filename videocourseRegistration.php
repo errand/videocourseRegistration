@@ -254,3 +254,7 @@ function add_new_videocourse_columns( $columns ) {
 }
 
 add_filter( 'manage_edit-videocourse_sortable_columns', 'add_new_videocourse_columns' );
+
+add_filter("um_email_template_body_attrs", function( $css_atts ){
+  return 'style="background: #fff;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;"';
+});
