@@ -258,3 +258,18 @@ add_filter( 'manage_edit-videocourse_sortable_columns', 'add_new_videocourse_col
 add_filter("um_email_template_body_attrs", function( $css_atts ){
   return 'style="background: #fff;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;"';
 });
+
+/**
+ * Add short tag {user_id}
+ */
+add_filter( 'um_template_tags_patterns_hook', 'my_template_tags_patterns', 10, 1 );
+add_filter( 'um_template_tags_replaces_hook', 'my_template_tags_replaces', 10, 1 );
+
+function my_template_tags_patterns( $search ) {
+  $search[] = '{user_id}';
+  return $search;
+}
+function my_template_tags_replaces( $replace ) {
+  $replace[] = um_user( 'ID' );
+  return $replace;
+}
