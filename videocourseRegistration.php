@@ -123,6 +123,20 @@ function deleteUser()
   die();
 }
 
+
+add_action("wp_ajax_setUserAccept", "setUserAccept");
+add_action("wp_ajax_nopriv_setUserAccept", "setUserAccept");
+
+function setUserAccept()
+{
+
+  $user_id = $_POST['user_id'];
+
+  update_field( 'acceptedNewsletter', true, 'user_'.$user_id);
+
+  die();
+}
+
 add_action("wp_ajax_recoverPassword", "recoverPassword");
 add_action("wp_ajax_nopriv_recoverPassword", "recoverPassword");
 
@@ -273,3 +287,27 @@ function my_template_tags_replaces( $replace ) {
   $replace[] = um_user( 'ID' );
   return $replace;
 }
+
+// Add acceptance column
+function modify_user_columns($column_headers) {
+  $column_headers['acceptedNewsletter'] = 'Accepted the newsletter';
+  return $column_headers;
+}
+add_action('manage_users_columns', 'modify_user_columns');
+
+function custom_admin_css() {
+  echo '<style>
+    .column-custom_field {width: 8%}
+    </style>';
+}
+add_action('admin_head', 'custom_admin_css');
+
+function user_accepted_newsletter($value, $column_name, $user_id) {
+  if ( 'acceptedNewsletter' == $column_name ) {
+    return get_field('acceptedNewsletter', 'user_'.$user_id) ? 'Yes' : '';
+  }
+
+  return $value;
+}
+add_action('manage_users_custom_column', 'user_accepted_newsletter', 10, 3);
+add_filter('manage_users_sortable_columns', 'modify_user_columns');
