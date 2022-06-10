@@ -311,3 +311,9 @@ function user_accepted_newsletter($value, $column_name, $user_id) {
 }
 add_action('manage_users_custom_column', 'user_accepted_newsletter', 10, 3);
 add_filter('manage_users_sortable_columns', 'modify_user_columns');
+
+add_action( 'um_after_email_confirmation', 'send_welcome', 10, 1 );
+function send_welcome( $user_id ) {
+  um_fetch_user($user_id);
+  UM()->mail()->send( um_user( 'user_email' ), 'approved_email' );
+}
