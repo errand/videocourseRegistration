@@ -240,6 +240,15 @@ function getVideoDone($post_id, $uid = null)
   }
 }
 
+function getUsersDone($post_id)
+{
+  //get users who watched video by id
+  global $wpdb;
+  $table_name = $wpdb->prefix . "videocourse";
+  $result = $wpdb->get_results("SELECT `user_id` FROM $table_name WHERE `post_id` = $post_id AND `done` = '1'");
+  return $result;
+}
+
 function getVideoCurrentProgress($post_id, $uid = null)
 {
   //get done for video by id
