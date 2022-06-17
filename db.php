@@ -187,7 +187,7 @@ function getDoneVideoTotal() {
     'post_type' => 'video'
   ));
   foreach ($posts as $post) {
-    if(getVideoDone($post->id)) {
+    if(getVideoDone($post->id, null)) {
       $count += 1;
     }
   }
@@ -208,7 +208,7 @@ function getDoneVideoPerTerm($tid) {
     )
   ));
   foreach ($posts as $post) {
-    if(getVideoDone($post->id)) {
+    if(getVideoDone($post->id, null)) {
       $count += 1;
     }
   }
@@ -223,14 +223,15 @@ function getVideoPostsTotal() {
   return $posts->found_posts;
 }
 
-function getVideoDone($post_id)
+function getVideoDone($post_id, $uid = null)
 {
   //get done for video by id
   global $wpdb;
   $table_name = $wpdb->prefix . "videocourse";
-  $current_user = wp_get_current_user();
-  //$post_id = $_POST['id'];
-  $uid = $current_user->ID;
+  if(is_null($uid)) {
+    $current_user = wp_get_current_user();
+    $uid = $current_user->ID;
+  }
   $result = $wpdb->get_results("SELECT `done` FROM $table_name WHERE `user_id` = $uid AND `post_id` = $post_id");
   if($result && $result[0]->done == 1) {
     return true;
@@ -239,14 +240,15 @@ function getVideoDone($post_id)
   }
 }
 
-function getVideoCurrentProgress($post_id)
+function getVideoCurrentProgress($post_id, $uid = null)
 {
   //get done for video by id
   global $wpdb;
   $table_name = $wpdb->prefix . "videocourse";
-  $current_user = wp_get_current_user();
-  //$post_id = $_POST['id'];
-  $uid = $current_user->ID;
+  if(is_null($uid)) {
+    $current_user = wp_get_current_user();
+    $uid = $current_user->ID;
+  }
   $result = $wpdb->get_results("SELECT `current` FROM $table_name WHERE `user_id` = $uid AND `post_id` = $post_id");
   if($result) {
     return $result[0]->current;
