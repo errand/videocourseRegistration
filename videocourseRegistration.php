@@ -317,3 +317,8 @@ function send_welcome( $user_id ) {
   um_fetch_user($user_id);
   UM()->mail()->send( um_user( 'user_email' ), 'approved_email' );
 }
+
+function filter_acf_relationship ($args, $field, $post_id) {
+  $args['post_status'] = 'publish'; return $args;
+}
+add_filter('acf/fields/post_object/query', 'filter_acf_relationship', 10, 3);
