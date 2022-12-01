@@ -216,7 +216,7 @@ function my_login_logo() { ?>
 add_action( 'login_enqueue_scripts', 'my_login_logo' );
 
 function my_login_logo_url() {
-  return '/videocourses';
+    return '/videokurs';
 }
 add_filter( 'login_headerurl', 'my_login_logo_url' );
 

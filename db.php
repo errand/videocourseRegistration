@@ -6,6 +6,15 @@ use Timber\Timber;
 global $videocourse_db_version;
 $videocourse_db_version = "1.0";
 
+function getVideoPostsIds() {
+    $ids = get_posts(array(
+        'posts_per_page' => -1,
+        'fields' => 'ids',
+        'post_type' => 'video',
+    ));
+    set_transient( 'videoIds', $ids, 60 * 24 );
+    return $ids;
+}
 
 function videocourse_install()
 {
@@ -81,8 +90,10 @@ function addVideo($pid)
 function countTotalTimeInTerm($term_id) //maybe try to combine counting all videos for course and individual timing
 {
   $length = 0;
-  $posts = Timber::get_posts(array(
+
+  $posts = get_posts(array(
     'posts_per_page' => -1,
+    'fields' => 'ids',
     'post_type' => 'video',
     'tax_query' => array(
       array(
@@ -92,25 +103,25 @@ function countTotalTimeInTerm($term_id) //maybe try to combine counting all vide
       )
     )
   ));
-  foreach ($posts as $post) {
-    $fid = get_post_meta($post->ID, 'mp4', true);
+  foreach ($posts as $id) {
+    $fid = get_post_meta($id, 'mp4', true);
     $length += getVideoLength($fid);
   }
-  return $length;
+    set_transient( 'totalTimeInTerm', $length, 600 );
+    return $length;
 }
 
 function countTotalTime() //maybe try to combine counting all videos for course and individual timing
 {
-  $length = 0;
-  $posts = Timber::get_posts(array(
-    'posts_per_page' => -1,
-    'post_type' => 'video',
-  ));
-  foreach ($posts as $post) {
-    $fid = get_post_meta($post->ID, 'mp4', true);
-    $length += getVideoLength($fid);
-  }
-  return $length;
+    $length = 0;
+
+    $posts = getVideoPostsIds();
+    foreach ($posts as $id) {
+        $fid = get_post_meta($id, 'mp4', true);
+        $length += getVideoLength($fid);
+    }
+    set_transient( 'countTotalTime', $length, 600 );
+    return $length;
 }
 
 function countCurrentTimeInTerm($tid) {
@@ -182,12 +193,9 @@ function renewVideoStatus()
 
 function getDoneVideoTotal() {
   $count = 0;
-  $posts = Timber::get_posts(array(
-    'posts_per_page' => -1,
-    'post_type' => 'video'
-  ));
-  foreach ($posts as $post) {
-    if(getVideoDone($post->id, 0)) {
+  $posts = getVideoPostsIds();
+  foreach ($posts as $id) {
+    if(getVideoDone($id, 0)) {
       $count += 1;
     }
   }
@@ -196,8 +204,9 @@ function getDoneVideoTotal() {
 
 function getDoneVideoPerTerm($tid) {
   $count = 0;
-  $posts = Timber::get_posts(array(
+  $posts = get_posts(array(
     'posts_per_page' => -1,
+    'fields' => 'ids',
     'post_type' => 'video',
     'tax_query' => array(
       array(
@@ -207,8 +216,9 @@ function getDoneVideoPerTerm($tid) {
       )
     )
   ));
-  foreach ($posts as $post) {
-    if(getVideoDone($post->id, 0)) {
+
+  foreach ($posts as $id) {
+    if(getVideoDone($id, 0)) {
       $count += 1;
     }
   }
@@ -216,11 +226,12 @@ function getDoneVideoPerTerm($tid) {
 }
 
 function getVideoPostsTotal() {
-  $posts = new PostQuery(array(
-    'posts_per_page' => -1,
-    'post_type' => 'video'
-  ));
-  return $posts->found_posts;
+  $posts = getVideoPostsIds();
+  return count($posts);
+}
+
+function countPercentage() {
+    return getDoneVideoTotal() * 100 / getVideoPostsTotal();
 }
 
 function getVideoDone($post_id, $uid)
