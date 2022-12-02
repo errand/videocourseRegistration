@@ -1,5 +1,6 @@
 <?php
 
+use Flynt\Utils\Options;
 use Timber\PostQuery;
 use Timber\Timber;
 
@@ -13,6 +14,23 @@ function getVideoPostsIds() {
         'post_type' => 'video',
     ));
     set_transient( 'videoIds', $ids, 60 * 24 );
+    return $ids;
+}
+
+function getVideoPostsIdsInTerm($term_id) {
+    $ids = get_posts(array(
+        'posts_per_page' => -1,
+        'fields' => 'ids',
+        'post_type' => 'video',
+        'tax_query' => array(
+            array(
+                'taxonomy' => 'videocourse',
+                'field' => 'term_id',
+                'terms' => $term_id,
+            )
+        )
+    ));
+    set_transient( 'getVideoPostsIdsInTerm', $ids, 60 * 24 );
     return $ids;
 }
 
@@ -45,6 +63,10 @@ function videocourse_install()
     add_option("videocourse_db_version", $videocourse_db_version);
   }
 }
+
+/**
+ * Ajax helper function to add Video id for Current User in DB
+**/
 
 function addVideo($pid)
 {
@@ -91,23 +113,11 @@ function countTotalTimeInTerm($term_id) //maybe try to combine counting all vide
 {
   $length = 0;
 
-  $posts = get_posts(array(
-    'posts_per_page' => -1,
-    'fields' => 'ids',
-    'post_type' => 'video',
-    'tax_query' => array(
-      array(
-        'taxonomy' => 'videocourse',
-        'field' => 'term_id',
-        'terms' => $term_id,
-      )
-    )
-  ));
+  $posts = getVideoPostsIdsInTerm($term_id);;
   foreach ($posts as $id) {
     $fid = get_post_meta($id, 'mp4', true);
     $length += getVideoLength($fid);
   }
-    set_transient( 'totalTimeInTerm', $length, 600 );
     return $length;
 }
 
@@ -120,7 +130,6 @@ function countTotalTime() //maybe try to combine counting all videos for course 
         $fid = get_post_meta($id, 'mp4', true);
         $length += getVideoLength($fid);
     }
-    set_transient( 'countTotalTime', $length, 600 );
     return $length;
 }
 
@@ -204,18 +213,7 @@ function getDoneVideoTotal() {
 
 function getDoneVideoPerTerm($tid) {
   $count = 0;
-  $posts = get_posts(array(
-    'posts_per_page' => -1,
-    'fields' => 'ids',
-    'post_type' => 'video',
-    'tax_query' => array(
-      array(
-        'taxonomy' => 'videocourse',
-        'field' => 'term_id',
-        'terms' => $tid,
-      )
-    )
-  ));
+  $posts = getVideoPostsIdsInTerm($tid);
 
   foreach ($posts as $id) {
     if(getVideoDone($id, 0)) {
@@ -231,7 +229,9 @@ function getVideoPostsTotal() {
 }
 
 function countPercentage() {
-    return getDoneVideoTotal() * 100 / getVideoPostsTotal();
+    $options = Options::getGlobal('Video Course');
+    $totalVideos = $options['totalVideos'];
+    return getDoneVideoTotal() * 100 / $totalVideos;
 }
 
 function getVideoDone($post_id, $uid)
