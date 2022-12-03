@@ -1,11 +1,37 @@
 <?php
 
-use Flynt\Utils\Options;
-use Timber\PostQuery;
-use Timber\Timber;
-
 global $videocourse_db_version;
 $videocourse_db_version = "1.0";
+
+function videocourse_install()
+{
+    global $wpdb;
+    global $videocourse_db_version;
+    $table_name = $wpdb->prefix . "videocourse";
+
+    $charset_collate = "DEFAULT CHARACTER SET {$wpdb->charset} COLLATE {$wpdb->collate}";
+
+    if ($wpdb->get_var("show tables like '$table_name'") != $table_name) {
+        $sql = "CREATE TABLE {$table_name}(
+	  id int(11) NOT NULL AUTO_INCREMENT,
+	  user_id int(11) NOT NULL,
+	  term_id int(11) NOT NULL,
+	  post_id int(11) NOT NULL,
+	  current float(11) NOT NULL,
+	  done bool,
+ 	  UNIQUE KEY id (id),
+ 	  KEY user_id (user_id),
+ 	  KEY term_id (term_id)
+	){$charset_collate};";
+
+        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+        dbDelta($sql);
+
+        //$rows_affected = $wpdb->insert($table_name, array());
+
+        add_option("videocourse_db_version", $videocourse_db_version);
+    }
+}
 
 function getVideoPostsIds() {
     $ids = get_posts(array(
@@ -34,82 +60,7 @@ function getVideoPostsIdsInTerm($term_id) {
     return $ids;
 }
 
-function videocourse_install()
-{
-  global $wpdb;
-  global $videocourse_db_version;
-  $table_name = $wpdb->prefix . "videocourse";
-
-  $charset_collate = "DEFAULT CHARACTER SET {$wpdb->charset} COLLATE {$wpdb->collate}";
-
-  if ($wpdb->get_var("show tables like '$table_name'") != $table_name) {
-    $sql = "CREATE TABLE {$table_name}(
-	  id int(11) NOT NULL AUTO_INCREMENT,
-	  user_id int(11) NOT NULL,
-	  term_id int(11) NOT NULL,
-	  post_id int(11) NOT NULL,
-	  current float(11) NOT NULL,
-	  done bool,
- 	  UNIQUE KEY id (id),
- 	  KEY user_id (user_id),
- 	  KEY term_id (term_id)
-	){$charset_collate};";
-
-    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-    dbDelta($sql);
-
-    //$rows_affected = $wpdb->insert($table_name, array());
-
-    add_option("videocourse_db_version", $videocourse_db_version);
-  }
-}
-
-/**
- * Ajax helper function to add Video id for Current User in DB
-**/
-
-function addVideo($pid)
-{
-  //some code to add video to db with user id by post id
-  global $wpdb;
-  $table_name = $wpdb->prefix . "videocourse";
-  $current_user = wp_get_current_user();
-  $uid = $current_user->ID;
-
-  if ($_POST['id']) {
-    $post_id = $_POST['id'];
-  } else {
-    $post_id = $pid;
-  }
-  //get the course id by post id
-  $terms = get_the_terms($post_id, 'videocourse');
-  //check if recordings exist
-  $result = $wpdb->get_results("SELECT `id` FROM $table_name WHERE `user_id` = $uid AND `post_id` = $post_id");
-  if (!$result) {
-    //add video for this uid
-    $data = [
-      'user_id' => $uid,
-      'term_id' => $terms[0]->term_id,
-      'post_id' => $post_id,
-      'current' => 0,
-      'done'    => false
-    ];
-    $wpdb->insert($table_name, $data);
-  } else {
-    $data = [
-      'term_id' => $terms[0]->term_id,
-    ];
-    $where = [
-      'user_id' => $uid,
-      'post_id' => $post_id,
-    ];
-    $wpdb->update($table_name, $data, $where);
-  }
-  wp_send_json_success();
-  wp_die();
-}
-
-function countTotalTimeInTerm($term_id) //maybe try to combine counting all videos for course and individual timing
+function countTotalTimeInTerm($term_id)
 {
   $length = 0;
 
@@ -121,16 +72,31 @@ function countTotalTimeInTerm($term_id) //maybe try to combine counting all vide
     return $length;
 }
 
-function countTotalTime() //maybe try to combine counting all videos for course and individual timing
-{
-    $length = 0;
+/**
+* Count and save all posts video lenght in Videocourse taxonomy
+ */
 
-    $posts = getVideoPostsIds();
-    foreach ($posts as $id) {
-        $fid = get_post_meta($id, 'mp4', true);
-        $length += getVideoLength($fid);
+/**
+ * Count and update length of videos in Videocourse terms and save it to ACF
+ * @return void
+ * */
+function updateTotalTimeInVideocourseTaxonomy(): void
+{
+    $terms = get_terms( array(
+        'taxonomy' => 'videocourse',
+        'hide_empty' => false,
+    ) );
+
+    foreach ($terms as $term) {
+        $length = 0;
+        $posts = getVideoPostsIdsInTerm($term->term_id);
+        foreach ($posts as $id) {
+
+            $fid = get_post_meta($id, 'mp4', true);
+            $length += getVideoLength($fid);
+        }
+        update_field( 'timeOfVideosInTerm', $length, 'videocourse_'.$term->term_id);
     }
-    return $length;
 }
 
 function countCurrentTimeInTerm($tid) {
@@ -146,20 +112,12 @@ function countCurrentTimeInTerm($tid) {
 	return $count;
 }
 
-function countAllCurrentTime() {
-	global $wpdb;
-	$count = 0;
-	$table_name = $wpdb->prefix . "videocourse";
-	$current_user = wp_get_current_user();
-	$uid = $current_user->ID;
-	$result = $wpdb->get_results("SELECT `current` FROM $table_name WHERE `user_id` = $uid");
-	foreach ($result as $row) {
-		$count += $row->current;
-	}
-	return $count;
-}
-
-function getVideoLength($fid)
+/**
+ * Get video file length
+ * @param int $fid
+ * @return int
+ */
+function getVideoLength(int $fid): int
 {
   $meta = '';
   require_once( ABSPATH . 'wp-admin/includes/media.php' );
@@ -169,46 +127,6 @@ function getVideoLength($fid)
     $meta = wp_read_video_metadata( $file_path );
   }
   return $meta['length'];
-}
-
-function renewVideoStatus()
-{
-  global $wpdb;
-  $table_name = $wpdb->prefix . "videocourse";
-  $current_user = wp_get_current_user();
-  $uid = $current_user->ID;
-
-  $post_id = $_POST['id'];
-  //get term id ($term_id)
-  $current = $_POST['current_time'];
-  //renew status of video (current time, done) by id&uid with ajax
-  $total = getVideoLength($post_id);
-  if ($current == $total) {
-    setVideoDone($post_id);
-  } else {
-    $data = [
-      'current' => $current,
-    ];
-    $where = [
-      'user_id' => $uid,
-      'post_id' => $post_id,
-    ];
-    $wpdb->update($table_name, $data, $where);
-  }
-
-  wp_send_json_success();
-  wp_die();
-}
-
-function getDoneVideoTotal() {
-  $count = 0;
-  $posts = getVideoPostsIds();
-  foreach ($posts as $id) {
-    if(getVideoDone($id, 0)) {
-      $count += 1;
-    }
-  }
-  return $count;
 }
 
 function getDoneVideoPerTerm($tid) {
@@ -223,18 +141,136 @@ function getDoneVideoPerTerm($tid) {
   return $count;
 }
 
-function getVideoPostsTotal() {
-  $posts = getVideoPostsIds();
-  return count($posts);
-}
-
-function countPercentage() {
-    $options = Options::getGlobal('Video Course');
-    $totalVideos = $options['totalVideos'];
+/*function countPercentage() {
+    $totalVideos = get_field('global_Video Course_totalVideos', 'option');
     return getDoneVideoTotal() * 100 / $totalVideos;
+}*/
+
+/*function updateUsersVideoDoneStats() {
+
+}*/
+
+
+/**
+* Count Video post type
+ * @return int
+ */
+function getVideoPostsTotal(): int {
+    $posts = getVideoPostsIds();
+    return count($posts);
 }
 
-function getVideoDone($post_id, $uid)
+/**
+ * Count all videos length
+ * @return int
+ */
+function countTotalTime(): int
+{
+    $length = 0;
+
+    $posts = getVideoPostsIds();
+    foreach ($posts as $id) {
+        $fid = get_post_meta($id, 'mp4', true);
+        $length += getVideoLength($fid);
+    }
+    return $length;
+}
+
+/**
+ * Count all current watched time for each user
+ */
+
+function countAllCurrentTime() {
+    global $wpdb;
+    $users = get_users( array( 'fields' => array( 'ID' ) ) );
+    foreach($users as $user){
+        $count = 0;
+        $table_name = $wpdb->prefix . "videocourse";
+        $uid = $user->ID;
+
+        $result = $wpdb->get_results("SELECT `current` FROM $table_name WHERE `user_id` = $uid");
+        foreach ($result as $row) {
+            $count += $row->current;
+        }
+        update_field( 'timeOfWatchedVideos', $count, 'user_'.$uid);
+    }
+}
+
+/**
+ * Mass update all users ACF watched videos with aggregated data
+ * @return void
+ */
+
+function updateUsersWatchedVideosACF(): void {
+    $users = get_users( array( 'fields' => array( 'ID' ) ) );
+    $posts = getVideoPostsIds();
+    foreach($users as $user){
+        $count = 0;
+        foreach ($posts as $id) {
+            if(getVideoDone($id, $user->ID)) {
+                $count += 1;
+            }
+        }
+        update_field( 'numberOfWatchedVideos', $count, 'user_'.$user->ID);
+    }
+}
+
+/**
+ * Count Video post type
+ */
+function countAllVideosAndUpdateACF() {
+    $number = getVideoPostsTotal();
+    $totalTime = countTotalTime();
+    update_field('global_Video Course_totalVideos', $number, 'option');
+    update_field('global_Video Course_totalVideoSeconds', $totalTime, 'option');
+}
+
+/**
+ * Add WP crontab 5 minutes interval
+ * */
+add_filter( 'cron_schedules', 'add_five_minutes_cron_interval' );
+function add_five_minutes_cron_interval( $schedules ) {
+    $schedules['five_minutes'] = array(
+        'interval' => 300,
+        'display'  => esc_html__( 'Every Five Minutes' ), );
+    return $schedules;
+}
+
+/**
+ * Cron jobs to update Videocourse stats every 5 minutes
+ */
+
+add_action( 'videostats_fiveminutes_cron_hook', 'videostats_cron_fiveminutes_exec' );
+function videostats_cron_fiveminutes_exec() {
+    updateUsersWatchedVideosACF();
+    countAllCurrentTime();
+}
+
+/**
+ * Cron jobs to update Videocourse stats
+ */
+add_action( 'videostats_cron_hook', 'videostats_cron_exec' );
+function videostats_cron_exec() {
+    countAllVideosAndUpdateACF();
+    updateTotalTimeInVideocourseTaxonomy();
+}
+
+if ( ! wp_next_scheduled( 'videostats_cron_hook' ) ) {
+    wp_schedule_event( time(), 'daily', 'videostats_cron_hook' );
+}
+
+if ( ! wp_next_scheduled( 'videostats_fiveminutes_cron_hook' ) ) {
+    wp_schedule_event( time(), 'five_minutes', 'videostats_fiveminutes_cron_hook' );
+}
+
+/**
+ * Check if Video(PID) has been watched by the user (UID)
+ * @param int $post_id
+ * @param int $uid
+ * @return bool
+*/
+
+function getVideoDone(int $post_id, int $uid): bool
 {
   //get done for video by id
   global $wpdb;
@@ -251,6 +287,9 @@ function getVideoDone($post_id, $uid)
   }
 }
 
+/**
+ * Get list of users who watched current video
+ * */
 function getUsersDone($post_id)
 {
   //get users who watched video by id
@@ -277,6 +316,10 @@ function getVideoCurrentProgress($post_id, $uid = null)
   }
 }
 
+/**
+ * Ajax call to set Video done flag
+ * */
+
 function setVideoDone($pid)
 {
   if ($_POST['id']) {
@@ -295,8 +338,88 @@ function setVideoDone($pid)
   wp_die();
 }
 
+/**
+ * Update video status on Ajax calls
+ * */
+
+function renewVideoStatus()
+{
+    global $wpdb;
+    $table_name = $wpdb->prefix . "videocourse";
+    $current_user = wp_get_current_user();
+    $uid = $current_user->ID;
+
+    $post_id = $_POST['id'];
+    //get term id ($term_id)
+    $current = $_POST['current_time'];
+    //renew status of video (current time, done) by id&uid with ajax
+    $total = getVideoLength($post_id);
+    if ($current == $total) {
+        setVideoDone($post_id);
+    } else {
+        $data = [
+            'current' => $current,
+        ];
+        $where = [
+            'user_id' => $uid,
+            'post_id' => $post_id,
+        ];
+        $wpdb->update($table_name, $data, $where);
+    }
+
+    wp_send_json_success();
+    wp_die();
+}
 
 
+/**
+ * Ajax helper function to add Video id for Current User in DB
+ **/
+
+function addVideo($pid)
+{
+    //some code to add video to db with user id by post id
+    global $wpdb;
+    $table_name = $wpdb->prefix . "videocourse";
+    $current_user = wp_get_current_user();
+    $uid = $current_user->ID;
+
+    if ($_POST['id']) {
+        $post_id = $_POST['id'];
+    } else {
+        $post_id = $pid;
+    }
+    //get the course id by post id
+    $terms = get_the_terms($post_id, 'videocourse');
+    //check if recordings exist
+    $result = $wpdb->get_results("SELECT `id` FROM $table_name WHERE `user_id` = $uid AND `post_id` = $post_id");
+    if (!$result) {
+        //add video for this uid
+        $data = [
+            'user_id' => $uid,
+            'term_id' => $terms[0]->term_id,
+            'post_id' => $post_id,
+            'current' => 0,
+            'done'    => false
+        ];
+        $wpdb->insert($table_name, $data);
+    } else {
+        $data = [
+            'term_id' => $terms[0]->term_id,
+        ];
+        $where = [
+            'user_id' => $uid,
+            'post_id' => $post_id,
+        ];
+        $wpdb->update($table_name, $data, $where);
+    }
+    wp_send_json_success();
+    wp_die();
+}
+
+/**
+ * Remove video from videocourse table when trash the post
+ * */
 function video_trash_action( $post_id ) {
   if ( 'video' != get_post_type( $post_id )) {
     return;
