@@ -73,6 +73,26 @@ function countTotalTimeInTerm($term_id)
 }
 
 /**
+* Mass update posts number in Videocourse taxonomy per term
+ * @return void
+ */
+function countPostsInVideoCourseTerms(): void {
+    $terms = get_terms( array(
+        'taxonomy' => 'videocourse',
+        'hide_empty' => false,
+    ) );
+
+    foreach ($terms as $term) {
+        $number = 0;
+        $posts = getVideoPostsIdsInTerm($term->term_id);
+        foreach ($posts as $id) {
+            $number += 1;
+        }
+        update_field( 'numberOfVideosInTerm', $number, 'videocourse_'.$term->term_id);
+    }
+}
+
+/**
 * Count and save all posts video lenght in Videocourse taxonomy
  */
 
@@ -115,9 +135,9 @@ function countCurrentTimeInTerm($tid) {
 /**
  * Get video file length
  * @param int $fid
- * @return int
+ * @return mixed|string
  */
-function getVideoLength(int $fid): int
+function getVideoLength(int $fid)
 {
   $meta = '';
   require_once( ABSPATH . 'wp-admin/includes/media.php' );
@@ -139,6 +159,20 @@ function getDoneVideoPerTerm($tid) {
     }
   }
   return $count;
+}
+// Should be deprecated
+function getDoneVideoTotal() {
+    $count = 0;
+    $posts = Timber::get_posts(array(
+        'posts_per_page' => -1,
+        'post_type' => 'video'
+    ));
+    foreach ($posts as $post) {
+        if(getVideoDone($post->id, 0)) {
+            $count += 1;
+        }
+    }
+    return $count;
 }
 
 /*function countPercentage() {
@@ -253,6 +287,7 @@ add_action( 'videostats_cron_hook', 'videostats_cron_exec' );
 function videostats_cron_exec() {
     countAllVideosAndUpdateACF();
     updateTotalTimeInVideocourseTaxonomy();
+    countPostsInVideoCourseTerms();
 }
 
 if ( ! wp_next_scheduled( 'videostats_cron_hook' ) ) {
