@@ -205,7 +205,9 @@ function countTotalTime(): int
     $posts = getVideoPostsIds();
     foreach ($posts as $id) {
         $fid = get_post_meta($id, 'mp4', true);
-        $length += getVideoLength($fid);
+        $postLength = getVideoLength($fid);
+        $length += $postLength;
+        update_field( 'videoLength', $postLength, 'post_'.$id);
     }
     return $length;
 }
