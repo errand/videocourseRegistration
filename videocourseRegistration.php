@@ -322,3 +322,49 @@ function filter_acf_relationship ($args, $field, $post_id) {
   $args['post_status'] = 'publish'; return $args;
 }
 add_filter('acf/fields/post_object/query', 'filter_acf_relationship', 10, 3);
+
+
+// CATEGORY TEXT EDITOR --- START
+if( is_admin() ) {
+// LETS REMOVE THE HTML FILTERING
+    remove_filter( 'pre_term_description', 'wp_filter_kses' );
+    remove_filter( 'term_description', 'wp_kses_data' );
+
+// LETS ADD OUR NEW CAT DESCRIPTION BOX
+    add_filter('edit_tag_form_fields', 'filter_wordpress_category_editor');
+    function filter_wordpress_category_editor($tag) {
+        ?>
+        <table class="form-table">
+            <tr class="form-field">
+                <th scope="row" valign="top"><label for="description"><?php _ex('Description', 'Taxonomy Description'); ?></label></th>
+                <td>
+                    <?php
+                    $settings = array('wpautop' => true, 'media_buttons' => true, 'quicktags' => true, 'textarea_rows' => '15', 'textarea_name' => 'description' );
+                    wp_editor(html_entity_decode($tag->description , ENT_QUOTES, 'UTF-8'), 'description1', $settings);
+                    ?>
+                    <br />
+                    <span class="description"><?php _e('The description is not prominent by default; however, some themes may show it.'); ?></span>
+                </td>
+            </tr>
+        </table>
+        <?php
+    }
+
+// HIDE THE DEFAULT CAT DESCRIPTION BOX USING JQUERY
+    add_action('admin_head', 'remove_default_category_description');
+    function remove_default_category_description()
+    {
+        global $current_screen;
+        if ( $current_screen->id == 'edit-tags' )
+        {
+            ?>
+            <script type="text/javascript">
+                jQuery(function($) {
+                    $('textarea#description').closest('tr.form-field').remove();
+                });
+            </script>
+            <?php
+        }
+    }
+}
+// CATEGORY TEXT EDITOR --- END
