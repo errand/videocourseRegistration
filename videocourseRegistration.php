@@ -355,7 +355,7 @@ if( is_admin() ) {
     function remove_default_category_description()
     {
         global $current_screen;
-        if ( $current_screen->id == 'edit-tags' )
+        if ( $current_screen->id == 'edit-videocourse' )
         {
             ?>
             <script type="text/javascript">
