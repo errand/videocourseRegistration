@@ -16,6 +16,7 @@ class UserRegister {
         this.logoutButton = document.getElementById('logoutButton');
         this.deleteUserButton = document.getElementById('deleteAccount');
         this.deleteUserButtonModal = document.getElementById('deleteAccountModal');
+        this.modal = document.querySelector('.modal');
     }
 
     addEventListeners () {
@@ -62,7 +63,7 @@ class UserRegister {
     }
 
     showRegistrationModal () {
-        modal.classList.add('show');
+        this.modal.classList.add('show');
     }
 
     closeAllTabs() {
