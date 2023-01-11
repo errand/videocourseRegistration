@@ -16,21 +16,6 @@ class UserRegister {
         this.logoutButton = document.getElementById('logoutButton');
         this.deleteUserButton = document.getElementById('deleteAccount');
         this.deleteUserButtonModal = document.getElementById('deleteAccountModal');
-
-        document.getElementById('registerSubmit').addEventListener('click', ev => this.registerUser(ev.target))
-        document.getElementById('loginSubmit').addEventListener('click', e => this.login(e))
-        document.getElementById('loginRecover').addEventListener('click', e => this.recoverPassword(e.target))
-
-        document.querySelector('[data-action="login"]').addEventListener('click', () => {
-            this.closeAllTabs()
-            document.querySelector('[data-tab="login"]').style.display = 'block';
-            document.querySelector('[data-action="login"]').classList.add('active')
-        })
-        document.querySelector('[data-action="register"]').addEventListener('click', () => {
-            this.closeAllTabs()
-            document.querySelector('[data-tab="register"]').style.display = 'block';
-            document.querySelector('[data-action="register"]').classList.add('active')
-        })
     }
 
     addEventListeners () {
@@ -50,6 +35,20 @@ class UserRegister {
                 document.getElementById('userDeleteCancel').addEventListener('click', () => this.deleteUserButtonModal.style.display = 'none');
             })
         }
+        document.getElementById('registerSubmit').addEventListener('click', ev => this.registerUser(ev.target))
+        document.getElementById('loginSubmit').addEventListener('click', e => this.login(e))
+        document.getElementById('loginRecover').addEventListener('click', e => this.recoverPassword(e.target))
+
+        document.querySelector('[data-action="login"]').addEventListener('click', () => {
+            this.closeAllTabs()
+            document.querySelector('[data-tab="login"]').style.display = 'block';
+            document.querySelector('[data-action="login"]').classList.add('active')
+        })
+        document.querySelector('[data-action="register"]').addEventListener('click', () => {
+            this.closeAllTabs()
+            document.querySelector('[data-tab="register"]').style.display = 'block';
+            document.querySelector('[data-action="register"]').classList.add('active')
+        })
     }
 
     checkUser () {
