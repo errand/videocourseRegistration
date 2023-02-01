@@ -16,6 +16,7 @@ class UserRegister {
         this.logoutButton = document.getElementById('logoutButton');
         this.deleteUserButton = document.getElementById('deleteAccount');
         this.deleteUserButtonModal = document.getElementById('deleteAccountModal');
+        this.closeModalButton = document.getElementById('modalClose');
         this.modal = document.querySelector('.modal');
     }
 
@@ -36,20 +37,29 @@ class UserRegister {
                 document.getElementById('userDeleteCancel').addEventListener('click', () => this.deleteUserButtonModal.style.display = 'none');
             })
         }
-        document.getElementById('registerSubmit').addEventListener('click', ev => this.registerUser(ev.target))
-        document.getElementById('loginSubmit').addEventListener('click', e => this.login(e))
-        document.getElementById('loginRecover').addEventListener('click', e => this.recoverPassword(e.target))
+        if (this.closeModalButton) {
+            this.closeModalButton.addEventListener('click', () => {
+                this.hideRegistrationModal()
+            });
+        }
+        if(document.getElementById('registerSubmit')) {
+            document.getElementById('registerSubmit').addEventListener('click', ev => this.registerUser(ev.target))
+            document.getElementById('loginSubmit').addEventListener('click', e => this.login(e))
+            document.getElementById('loginRecover').addEventListener('click', e => this.recoverPassword(e.target))
+        }
 
-        document.querySelector('[data-action="login"]').addEventListener('click', () => {
-            this.closeAllTabs()
-            document.querySelector('[data-tab="login"]').style.display = 'block';
-            document.querySelector('[data-action="login"]').classList.add('active')
-        })
-        document.querySelector('[data-action="register"]').addEventListener('click', () => {
-            this.closeAllTabs()
-            document.querySelector('[data-tab="register"]').style.display = 'block';
-            document.querySelector('[data-action="register"]').classList.add('active')
-        })
+        if(document.querySelector('[data-action="login"]')) {
+            document.querySelector('[data-action="login"]').addEventListener('click', () => {
+                this.closeAllTabs()
+                document.querySelector('[data-tab="login"]').style.display = 'block';
+                document.querySelector('[data-action="login"]').classList.add('active')
+            })
+            document.querySelector('[data-action="register"]').addEventListener('click', () => {
+                this.closeAllTabs()
+                document.querySelector('[data-tab="register"]').style.display = 'block';
+                document.querySelector('[data-action="register"]').classList.add('active')
+            })
+        }
     }
 
     checkUser () {
@@ -64,6 +74,10 @@ class UserRegister {
 
     showRegistrationModal () {
         this.modal.classList.add('show');
+    }
+
+    hideRegistrationModal () {
+        this.modal.classList.remove('show');
     }
 
     closeAllTabs() {
